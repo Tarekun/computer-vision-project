@@ -74,44 +74,40 @@ Each entry describes a question that is not yet answered. When closed, the entry
 
 - **Question.** Which feature, or combination of features, drives the 8-class
   decision in block C?
-- **Options.**
-  (a) radius only;
-  (b) HSV colour only, using copper / gold / bi-metallic priors;
-  (c) NCC or ZNCC template matching against the reference set;
-  (d) SIFT keypoints + Lowe ratio test against the reference set;
-  (e) multi-cue voting combining a subset of the above.
-- **Criterion to close.** After visual inspection of the reference set and a sample
-  of the target set (M0), compute, on the reference set, the per-denomination radius
-  distribution and the mean HSV in the disc interior. Pick the cue (or combination)
-  with the cleanest separation on the ambiguous pairs `{1¢, 2¢, 5¢}` (all copper)
-  and `{10¢, 20¢, 50¢}` (all gold).
-- **Status.** 🟡 OPEN — blocked on dataset inspection.
+- **Evidence (M0/M1, 2026-05-26).** Both "obvious" absolute cues are dead cross-set:
+  - *Absolute colour / family*: the `target_set` carries a strong blue specular cast
+    (coin hue ≈ 100–118 vs reference 5–31; `b*` flips sign). It is **not** a global
+    white balance (backgrounds are ≈ neutral) and is **not invertible** by a filter —
+    it is specular reflection of the environment on the metal. Copper/gold do not
+    separate, not even by eye. → options (b) eliminated (DEC-3).
+  - *SIFT vs reference* (d): the ref×ref good-match matrix is **not** diagonal-dominant
+    (false cross-matches 20–30), target predictions collapse onto the high-keypoint
+    references, and only value-side-up coins could ever match (≈ 50% recall). Weak;
+    parked unless rescued by RANSAC geometric verification.
+  - *Relative radius within an image* is metric (DEC-1) and survives everything.
+  - *Bi-metallic structure* is detectable (§4.4).
+- **Chosen direction.** (f) **geometry-first joint inference**: per image, detect all
+  coins, fit a single scale `s` mapping their radii onto the known diameter grid
+  {16.25, 18.75, 19.75, 21.25, 22.25, 23.25, 24.25, 25.75}; anchor `s` with a detected
+  bi-metallic coin (§4.4) or the constellation's self-consistency. Within-family size
+  gaps are wide (≥ 2 mm), so the hard ~1 mm collisions (all cross-family) are the
+  residual ambiguity, resolved by the bi-metallic flag or accepted as the limit.
+- **Criterion to close.** Validate the scale-grid fit on target images with a
+  bi-metallic anchor (M3); report per-image confidence.
+- **Status.** 🟠 DIRECTION SET (geometry-first) — pending M2/M3 validation.
 
 ### 4.2 — Scale strategy
 
-- **Question.** How do we cope with the fact that pixel radius is not metric — it
-  depends on the camera-to-subject distance, which the dataset does not document?
-- **Options.**
-  (a) absolute scale: assume distance is roughly constant across images and use
-  absolute radius thresholds calibrated on the reference set;
-  (b) intra-image relative scale: identify one coin by a non-size cue (e.g., the
-  bi-metallic 1€ or 2€) and use its known diameter as a per-image scale anchor;
-  (c) scale-invariant classification: avoid the problem by matching with a method
-  that does not require knowing the absolute scale (SIFT, NCC over a scale pyramid).
-- **Criterion to close.** After M0, judge from a 10+ image sample of the target set
-  whether camera distance is visibly constant. If not, (a) is out and we choose
-  between (b) and (c) based on §4.1.
-- **Status.** 🟡 OPEN — blocked on dataset inspection.
+**CLOSED → DEC-1.** Absolute radius is not metric: `1€` is detected larger (r = 98 px)
+than `2€` (r = 82 px) across reference shots, although physically smaller ⇒ the
+camera-to-coin distance varies between shots. Coins *within one image* share distance
+and pose, so their radius **ratios** are metric. Use intra-image relative radius +
+a per-image scale anchor (§4.1 f).
 
 ### 4.3 — Background scale anchor
 
-- **Question.** Does the `target_set` background contain a known-size reference
-  object (a hand, a ruler, an A4 sheet, a printed grid)?
-- **Options.**
-  (a) yes — exploit it as a per-image scale calibration, which simplifies §4.2;
-  (b) no — fall back to one of the options of §4.2.
-- **Criterion to close.** Visual inspection of a 10+ image sample of the target set.
-- **Status.** 🟡 OPEN — blocked on dataset inspection.
+**CLOSED → DEC-2.** No known-size reference object in the target backgrounds (plain
+surfaces — no ruler/hand/A4). Fall back to the intra-image scale strategy of §4.2.
 
 ### 4.4 — Bi-metallic identification (1€, 2€)
 
@@ -124,21 +120,26 @@ Each entry describes a question that is not yet answered. When closed, the entry
   / 25.75 mm ≈ 0.70);
   (c) edge density at intermediate radius — a non-zero inner contour indicates a
   bi-metallic coin.
-- **Criterion to close.** Validate the chosen method on the two bi-metallic reference
-  images and on at least one target image containing a 1€ or a 2€. Accept the first
-  option that succeeds on all three.
-- **Status.** 🟢 LIKELY EASY — strong cue, expected to close quickly.
+- **Evidence (2026-05-26).** On the reference set the radial profile shows the
+  signature clearly for **2€** (localized edge peak + brightness step at r/R ≈ 0.72,
+  matching 18/25.75 ≈ 0.70) and subtly for **1€**. Method (b) radial profile is
+  chosen over a naïve inner-annulus energy score, which fails (it just tracks relief:
+  1c scored higher than the bi-metallics). Being gradient-based, it should survive
+  the colour cast.
+- **Criterion to close.** Validate on a target bi-metallic and harden the 1€ detector.
+- **Status.** 🟢 STRUCTURAL SIGNATURE CONFIRMED on reference (b); pending target
+  validation.
 
 ### 4.5 — Smoothing before Canny
 
-- **Question.** Gaussian or bilateral smoothing as the pre-Canny step in block A?
-- **Options.**
-  (a) Gaussian (§3.3) — fast, separable, may slightly oversmooth the coin rim;
-  (b) bilateral (§3.4) — preserves edges, roughly an order of magnitude slower.
-- **Criterion to close.** Compare the Canny output on a handful of reference and
-  target images. Default to Gaussian unless the edge of the coin is visibly degraded
-  by it.
-- **Status.** 🟡 OPEN.
+**CLOSED → DEC-4.** **Gaussian** (σ ≈ 2), *not* bilateral. Target images are noisy
+(σ ≈ 17 vs reference ≈ 0.3), and the Canny comparison on a noisy target is decisive:
+raw is a sea of noise; Gaussian leaves clean coin contours; bilateral, being
+edge-preserving, keeps the background noise-texture that floods Hough with spurious
+circles (13 circles on a 3-coin image vs 2 with Gaussian). For circle detection only
+the strong rim matters, and it survives the Gaussian. (Denoising filters of cap. 3.4
+do *not* touch the colour cast — they are a detection pre-step only, never a
+classification tool.)
 
 ### 4.6 — `cv2.HoughCircles` parameter tuning
 
@@ -149,7 +150,28 @@ Each entry describes a question that is not yet answered. When closed, the entry
 - **Criterion to close.** On the validation subset, zero missed coins and zero
   spurious circles. Hard cap: three rounds of parameter sweeps; if the budget is
   exhausted, revisit §4.5 instead of pushing further on params.
-- **Status.** 🟡 OPEN.
+- **Evidence (2026-05-26).** Now the **active bottleneck**. With Gaussian + (dp=1.2,
+  minDist=110, param1=120, param2=42, r ∈ [38,210]), `image_133` detects 2 of its 3
+  coins — the lighter, low-contrast coin is missed. Lowering `param2` should recover
+  it without reintroducing the bilateral's false positives.
+- **Status.** 🟡 OPEN — *but possibly moot:* §4.7 may replace Hough with a LoG
+  scale-space blob detector; tune only if Hough is retained.
+
+### 4.7 — Detection method: Hough vs LoG/DoG scale-space blobs
+
+- **Question.** Detect coins with `cv2.HoughCircles` (on a Gaussian-smoothed image)
+  or with a **LoG/DoG scale-space blob detector** (§5.4)?
+- **Evidence (2026-05-26).** A coin is a dark blob on a lighter background. A hand-built
+  scale-normalized LoG scale-space (σ ∈ [25,115], r = √2·σ\*) detects, on `image_133`,
+  **3/3 coins including the low-contrast one Hough missed**, and 4/4 on `image_76`,
+  with no false positives; it returns the radius for free, needs **no separate block-A
+  smoothing** (the scale-space *is* the blur), and is immune to the σ ≈ 17 target noise
+  (gone at coin scale). Generalizes well on a 12-image sample; one anomalous (greenish)
+  image still to be checked.
+- **Criterion to close.** Validate on a larger target sample + the single-coin
+  reference images; check failure cases (touching coins, glare, the greenish image).
+- **Status.** 🟢 LoG LEADING — strong on first tests; if adopted it supersedes §4.5
+  and §4.6 and folds block A into block B.
 
 ## 5. Decision log
 
@@ -158,25 +180,52 @@ why, and the chapter of the summary that legitimises it.
 
 | ID  | Date       | Decision | Why | Summary § |
 |-----|------------|----------|-----|-----------|
-| —   | —          | *(empty — no decisions closed yet)* | — | — |
+| DEC-1 | 2026-05-26 | Drop absolute radius; use intra-image **relative** radius + per-image scale anchor. | 1€ (r=98) detected larger than 2€ (r=82) across reference shots though physically smaller ⇒ pixel radius is not metric. Coins in one image share distance/pose ⇒ radius *ratios* are metric. | §6.3 Hough + scale reasoning |
+| DEC-2 | 2026-05-26 | No background scale anchor; rely on intra-image scale (§4.1 f / §4.2). | Target backgrounds are plain surfaces — no ruler/hand/A4. | — |
+| DEC-3 | 2026-05-26 | Colour eliminated as a cross-set classification cue. | Target coins carry a strong blue specular cast (hue ≈ 100 vs ref ≈ 10); not a global WB (bg ≈ neutral), not invertible by a filter; copper/gold inseparable even by eye. | §3.4 (filters cannot undo it) |
+| DEC-4 | 2026-05-26 | Block A pre-Canny smoothing = **Gaussian** (σ ≈ 2), not bilateral. | On noisy targets the bilateral preserves background noise-texture ⇒ Hough floods with spurious circles (13 vs 2 on a 3-coin image); Gaussian suppresses it and keeps the coin rim. Empirically overturned the theory-based bilateral lean. | §3.3 Gaussian, §4 Canny |
 
 ## 6. Journal
 
 Append-only, newest-on-bottom. Each entry is dated and describes what was tried,
 what was observed, and what changes for the open decisions in §4.
 
-> *(empty — fills up as work progresses)*
+### 2026-05-26 — M0 inspection + M1 calibration + cap.3.4 filter eval
+
+- **Data.** `coin_dataset/`: reference_set = 8 labelled single-coin images,
+  target_set = 142 multi-coin images, all 960×720.
+- **M0/M1.** Confirmed: absolute radius not metric (→ DEC-1), no bg anchor (→ DEC-2),
+  blue **specular** colour cast on target coins (→ DEC-3). SIFT-vs-reference weak
+  (ref×ref matrix not diagonal-dominant; target predictions collapse onto high-keypoint
+  refs; ≈ 50% two-sides recall) → §4.1(d) parked. Bi-metallic radial-profile signature
+  confirmed on reference, clear for 2€ (→ §4.4).
+- **Filter bench (cap. 3.4 / Table 1).** Mean/Gaussian/Median/Bilateral/NL-means.
+  Coin hue unchanged by every filter ⇒ denoising does **not** remove the cast. But the
+  target noise is real (σ ≈ 17 vs reference σ ≈ 0.3) ⇒ edge-preserving smoothing is
+  justified as a *detection* pre-step (→ §4.5 leaning bilateral).
+- **Direction.** Classification pivots to **geometry-first joint inference** (§4.1 f).
+- **Artifacts.** `playground.ipynb`; scratch figures in `.scratch/` (gitignored).
+
+### 2026-05-26 (b) — cap. 5.4 scale-space LoG blob detector
+
+Tried on the hunch that "multiple blur levels" (§5.4) might help. A hand-built
+scale-normalized LoG scale-space detects coins as blobs and reads their radius from the
+characteristic σ. On `image_133` it finds **3/3** (Hough found 2/3, missing the
+low-contrast coin) and **4/4** on `image_76`, cleanly; robust across a 12-image sample.
+→ opened §4.7 (LoG leading over Hough); if adopted it folds block A into B and makes
+§4.5/§4.6 moot. Honest limit: it is a detection/size tool only — it does not address
+the colour cast or classification.
 
 ## 7. TODO — high-level milestones
 
 Project-level milestones only. Day-to-day tasks are tracked in the session task
 tracker, not here.
 
-- [ ] **M0** — Dataset in place; first visual inspection of `reference_set` and
-      a sample of `target_set`. Closes the "blocked on dataset inspection" status
-      on §4.1 / §4.2 / §4.3.
-- [ ] **M1** — Calibration baseline on `reference_set`: per-denomination radius
-      distribution and mean HSV. Inputs for closing §4.1 and §4.2.
+- [x] **M0** — Dataset in place; visual inspection done (2026-05-26). Closed the
+      "blocked on dataset inspection" status on §4.1 / §4.2 / §4.3.
+- [~] **M1** — Reference radii + colour measured; radius found non-metric and colour
+      cast-corrupted (DEC-1/DEC-3). Per-denomination calibration to be finalized with
+      the scale-grid fit.
 - [ ] **M2** — Detection block tuned on the reference set; validated on at least
       three target images. Closes §4.5 and §4.6.
 - [ ] **M3** — Classification block working on the reference set, evaluated
