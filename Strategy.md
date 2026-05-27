@@ -126,9 +126,30 @@ surfaces — no ruler/hand/A4). Fall back to the intra-image scale strategy of �
   chosen over a naïve inner-annulus energy score, which fails (it just tracks relief:
   1c scored higher than the bi-metallics). Being gradient-based, it should survive
   the colour cast.
-- **Criterion to close.** Validate on a target bi-metallic and harden the 1€ detector.
-- **Status.** 🟢 STRUCTURAL SIGNATURE CONFIRMED on reference (b); pending target
-  validation.
+- **Evidence (2026-05-27, target validation).** Two findings. **(i) Colour sign is
+  not just dead but *inverted* on targets.** Scanning the 142 targets for big coins with
+  a large radial `b*` step (|b\*ring − b\*core| > 9) yields 24 candidates, of which **20
+  read "ring-silver / core-gold" (the 2€ pattern) and only 4 the 1€ pattern** — an
+  impossible distribution. Cause: the blue specular cast pushes `b*` negative *more on
+  the outer ring* (more reflective) than on the core, flipping/flattening the sign that
+  on the reference separated 1€ (+14) from 2€ (−13). ⇒ colour **sign** is unusable for
+  1€-vs-2€ on targets (hardens DEC-3); only the **magnitude** |b\*ring − b\*core| partly
+  survives. **(ii) The structural marker (b) alone is weak on targets.** A radial
+  gradient-magnitude profile finds an inner peak, but the separation is poor (mean
+  structural score 0.36 on colour-candidates vs 0.19 on monometallic coins) and the
+  top-scoring coins are monometallic pieces whose **relief/design** produces a gradient
+  ring at ρ ≈ 0.79–0.81 (near the rim), not a true bi-metal boundary at ρ ≈ 0.70.
+- **Revised direction.** Neither colour nor structure identifies bi-metals reliably
+  *alone*. Combine the two weak cues: a coin is bi-metallic if it has **high
+  |b\*ring − b\*core|** (magnitude, sign discarded) **AND** a gradient peak at **ρ ≈ 0.70**
+  (not ≈ 0.80). If the combined test is still unreliable, fall back to the
+  **constellation scale-fit** (§4.1 f) as the primary anchor, using the bi-metal flag
+  only as confirmation.
+- **Criterion to close.** Combined colour-magnitude + ρ≈0.70 test validated on targets
+  with known 1€/2€; else demote the anchor to the constellation fit.
+- **Status.** 🟠 OPEN (reopened by target validation) — reference signature confirmed,
+  but on targets colour-sign is inverted (DEC-3) and the structural marker alone is weak;
+  combined cue under evaluation.
 
 ### 4.5 — Smoothing before Canny
 
@@ -150,28 +171,62 @@ classification tool.)
 - **Criterion to close.** On the validation subset, zero missed coins and zero
   spurious circles. Hard cap: three rounds of parameter sweeps; if the budget is
   exhausted, revisit §4.5 instead of pushing further on params.
-- **Evidence (2026-05-26).** Now the **active bottleneck**. With Gaussian + (dp=1.2,
-  minDist=110, param1=120, param2=42, r ∈ [38,210]), `image_133` detects 2 of its 3
-  coins — the lighter, low-contrast coin is missed. Lowering `param2` should recover
-  it without reintroducing the bilateral's false positives.
-- **Status.** 🟡 OPEN — *but possibly moot:* §4.7 may replace Hough with a LoG
-  scale-space blob detector; tune only if Hough is retained.
+**CLOSED → DEC-5.** Hough is the detector (§4.7). Working values on a mixed validation
+sample: `dp=1.2, minDist≈95, param1=150, param2≈44, r ∈ [45,150]` on a `medianBlur(5)`
+grayscale. The key fix is a *mid* `minDist` (~95): it merges duplicate votes for one coin
+without dropping touching coins (`image_76`), so no custom de-duplication is needed. The
+earlier `minDist=110` "miss" on `image_133` was an artefact of tuning on a single image.
 
 ### 4.7 — Detection method: Hough vs LoG/DoG scale-space blobs
 
-- **Question.** Detect coins with `cv2.HoughCircles` (on a Gaussian-smoothed image)
-  or with a **LoG/DoG scale-space blob detector** (§5.4)?
-- **Evidence (2026-05-26).** A coin is a dark blob on a lighter background. A hand-built
-  scale-normalized LoG scale-space (σ ∈ [25,115], r = √2·σ\*) detects, on `image_133`,
-  **3/3 coins including the low-contrast one Hough missed**, and 4/4 on `image_76`,
-  with no false positives; it returns the radius for free, needs **no separate block-A
-  smoothing** (the scale-space *is* the blur), and is immune to the σ ≈ 17 target noise
-  (gone at coin scale). Generalizes well on a 12-image sample; one anomalous (greenish)
-  image still to be checked.
-- **Criterion to close.** Validate on a larger target sample + the single-coin
-  reference images; check failure cases (touching coins, glare, the greenish image).
-- **Status.** 🟢 LoG LEADING — strong on first tests; if adopted it supersedes §4.5
-  and §4.6 and folds block A into block B.
+**CLOSED → DEC-5 (LoG lead reversed).** A random-sample spike (2026-05-27,
+`playground.ipynb` "Detection v3") overturned the earlier LoG lead. The LoG seeks *dark*
+blobs only, so it silently **misses bright/specular coins** (`image_132`, `image_138`)
+and **floods dark/textured backgrounds with false positives** (`image_103`: 19 "coins").
+Hough detects the coin **rim** — an edge present at *both* contrast polarities — and with
+a sensible `minDist` (§4.6) it gives exact counts on the showcase with zero FP.
+→ **Hough adopted, LoG dropped.** Block-A Gaussian smoothing (DEC-4) is kept (Hough is
+noise-sensitive).
+
+### 4.8 — Detection robustness: the weak-rim failure mode
+
+- **Question.** A full-set smoke test (`all_smoke.ipynb`, 2026-05-27) found the Hough
+  detector returns **zero** on **32/142 images (23%)**. They are *not* empty and the
+  coins are *not* tiny (r ≈ 40–55 px): they have **weak rims** — soft edges on textured
+  light cloth — that score below the accumulator. Recover them without wrecking the easy
+  images?
+- **Evidence (what fails).** Every *global* lever couples recall and false positives:
+  lowering `param2`, lowering `param1`, or CLAHE all surface the weak coins **and** flood
+  the easy images with FP (`image_103`: 3→108 at low `param1`; CLAHE → ~115 circles/img).
+  No single global setting serves both regimes.
+- **Evidence (partial fix).** Sensitive Hough (high recall + FP) + a **rim-score** filter
+  (fraction of the perimeter carrying a strong radial gradient, §4) halves the validation
+  count-error (28→15) and recovers ~half the weak coins, but misses the softest ones and
+  adds the odd FP/regression on easy images. A geometric filter cannot cleanly separate
+  weak coins from FP — both have weak gradients.
+- **Spike result (2026-05-27, `playground.ipynb` v5–v7).** Pipeline = **overshoot
+  (CLAHE+median, recall 28/28 · ~95 FP) → per-candidate gate**. Gates compared on a 14-image
+  validation set (8 weak + 6 easy), scored as recall-weak / FP-easy:
+  - **rim-score** (geometric, §4): 5/28 · 0 FP — precision-perfect but kills the weak (it
+    measures rim-gradient strength, exactly what these coins lack).
+  - **ZNCC** (§6.1, intensity): 27/28 · 30 FP — keeps recall but imprecise (texture patches
+    correlate in intensity).
+  - **shape-based** (§6.2, gradient *direction*): **18–20/28 · 3–4 FP** — best
+    precision/recall trade-off, ~10× cleaner than ZNCC. Two subtleties: the dot product must
+    be **signed** (`|dot|` floors at E[|cos|]=0.64 on random gradients), and an outer `|·|`
+    on the mean absorbs the cast's bright/dark polarity flip. Validates **§6.2 over §6.1** on
+    the cast-corrupted set: gradient orientation beats intensity correlation (the cast
+    corrupts intensity, not edge geometry).
+  - **shape OR contrast / S-contrast** (combination attempt): **rejected** — adds a few weak
+    (20→24) but at 3–4× the FP (3→12), because the softest coins lack both rim *and* contrast
+    while FP stains have contrast. Combination does not improve the trade-off.
+- **Chosen direction.** **Overshoot (CLAHE+median) → shape-based gate (§6.2, DEC-8)** for
+  weak-rim recovery. Recovers ~64–71% of weak coins at ≈3–4 FP on the validation set.
+- **Criterion to close.** Validate the full overshoot→shape-gate pipeline on a wider random
+  target sample (rerun `all_smoke.ipynb`); confirm the zero-detection rate drops without the
+  easy-image FP rate blowing up.
+- **Status.** 🟢 DIRECTION SET — overshoot + shape-gate (§6.2); residual gap ≈10 softest-rim
+  coins. Pending wide-sample validation before folding into `solution.ipynb`.
 
 ## 5. Decision log
 
@@ -184,6 +239,10 @@ why, and the chapter of the summary that legitimises it.
 | DEC-2 | 2026-05-26 | No background scale anchor; rely on intra-image scale (§4.1 f / §4.2). | Target backgrounds are plain surfaces — no ruler/hand/A4. | — |
 | DEC-3 | 2026-05-26 | Colour eliminated as a cross-set classification cue. | Target coins carry a strong blue specular cast (hue ≈ 100 vs ref ≈ 10); not a global WB (bg ≈ neutral), not invertible by a filter; copper/gold inseparable even by eye. | §3.4 (filters cannot undo it) |
 | DEC-4 | 2026-05-26 | Block A pre-Canny smoothing = **Gaussian** (σ ≈ 2), not bilateral. | On noisy targets the bilateral preserves background noise-texture ⇒ Hough floods with spurious circles (13 vs 2 on a 3-coin image); Gaussian suppresses it and keeps the coin rim. Empirically overturned the theory-based bilateral lean. | §3.3 Gaussian, §4 Canny |
+| DEC-5 | 2026-05-27 | Detector = **Hough circles** (mid `minDist≈95`); LoG dropped. | LoG is dark-blob-only ⇒ misses bright/specular coins and floods dark backgrounds with FP (`image_103`: 19); the Hough rim is polarity-agnostic and exact on the showcase. Reverses §4.7's LoG lead. | §6.3 Hough, §4 edges |
+| DEC-6 | 2026-05-27 | Reject *global* sensitivity levers (`param1`/`param2`/CLAHE) for weak-rim recovery. | Recall and false positives are coupled: any global rise in sensitivity recovers weak coins but floods easy images (`image_103`: 3→108). Recovery, if any, must be a post-hoc per-candidate validation (§4.8). | §4 edges, §6.3 |
+| DEC-7 | 2026-05-27 | Discard the bi-metal colour **sign** on targets; identify bi-metals by \|b\* step\| **magnitude** + a radial gradient peak at ρ≈0.70 (combined), else fall back to the constellation scale-fit. | The blue specular cast inverts the ring/core `b*` sign on targets (24-coin scan: 20 read 2€-like, 4 1€-like — impossible); the structural marker alone is weak (monometallic relief peaks at ρ≈0.80). Neither cue suffices alone. | §4 edges, §6 instance-level |
+| DEC-8 | 2026-05-27 | Weak-rim recovery = **overshoot (CLAHE+median) → shape-based gate** (§6.2, signed gradient-direction match vs the 8 references). Reject ZNCC, rim-score, and the contrast/S-channel combination as the gate. | On validation the shape gate gives 18–20/28 recall at 3–4 FP — ~10× cleaner than ZNCC (27/28 · 30 FP) and far more recall than rim-score (5/28). Gradient *direction* is intensity-invariant ⇒ survives the cast; the signed dot is what makes it discriminate. Contrast cues add FP faster than recall. | §6.2 shape-based matching, §4 |
 
 ## 6. Journal
 
@@ -216,6 +275,51 @@ low-contrast coin) and **4/4** on `image_76`, cleanly; robust across a 12-image 
 §4.5/§4.6 moot. Honest limit: it is a detection/size tool only — it does not address
 the colour cast or classification.
 
+### 2026-05-27 — Detection hardening on the full target set
+
+- **Showcase spike (`playground.ipynb` Detection v3).** Ran the detectors on a random
+  6-image sample → **reversed §4.7**: the LoG misses bright coins (`image_132/138`) and
+  floods dark backgrounds (`image_103`: 19 FP), while Hough with a mid `minDist≈95` is
+  polarity-agnostic and exact (4/3/3/4/1/1), no custom dedup needed (DEC-5).
+- **Full smoke test (`all_smoke.ipynb`, git-ignored).** 142 images, 228 coins. **32
+  images (23%) return zero** — not empty: coins with **weak rims** (r ≈ 40–55 px) on
+  textured cloth (→ §4.8). Over-detection is real density, not FP; duplicates a non-issue.
+- **Weak-rim recovery attempts.** Global levers (`param1`/`param2`/CLAHE) all couple
+  recall and FP (DEC-6). A sensitive-Hough + rim-score filter halves the validation
+  count-error (28→15) but only partially. Author proposes an **instance-level gate**
+  (overshoot + keep strong appearance matches); risk flagged, spike pending (§4.8).
+- **Artifacts.** `playground.ipynb` (Detection v3 + v4); `all_smoke.ipynb`.
+
+### 2026-05-27 (b) — Colour cast inverts bi-metal appearance on targets
+
+- **Trigger.** Noticed 1€/2€ look colour-swapped on targets vs reality. Verified: on the
+  **reference** the ring-vs-core `b*` is correct (1€ ring=gold +14; 2€ ring=silver −13).
+- **On targets it inverts.** Among 24 big coins with a large radial `b*` step, **20 read
+  "2€-like" (ring silver / core gold), only 4 "1€-like"** — impossible. The blue specular
+  cast drives `b*` negative *more on the outer ring* than the core, flipping the sign that
+  separated 1€/2€ on reference. ⇒ colour **sign** unusable for 1€-vs-2€ on targets
+  (hardens DEC-3); only |b\* step| **magnitude** survives. → §4.4.
+- **Structural marker validated, found weak.** Radial gradient profile: separation poor
+  (0.36 vs 0.19), top scores are monometallic **relief** (peak at ρ ≈ 0.80, not 0.70).
+  Revised direction: **combine** |b\* step| magnitude **AND** gradient peak at ρ ≈ 0.70;
+  else demote the bi-metal anchor to the constellation scale-fit (§4.1 f). → §4.4 reopened.
+- **Artifacts.** ad-hoc analysis scripts (not committed).
+
+### 2026-05-27 (c) — Weak-rim recovery: overshoot + gate, shape-based wins
+
+- **Transform sweep.** Tested 7 pre-Hough transforms (bilateral, median, morph-close, S+bilat,
+  CLAHE, unsharp). Recall-weak and FP-easy are coupled across all of them: soft transforms
+  recover nothing, aggressive ones (unsharp/CLAHE) recover 28/28 weak but at 95–384 FP. ⇒ no
+  global transform breaks the trade-off (DEC-6); CLAHE+median is the best **overshoot**.
+- **Gate comparison** (overshoot → per-candidate gate, validation set): rim-score 5/28·0FP;
+  ZNCC (§6.1) 27/28·30FP; **shape-based (§6.2) 18–20/28·3–4FP** — the winner (DEC-8). Key:
+  *signed* gradient-direction dot (the `|dot|` version floors at 0.64 and fails), outer `|·|`
+  for the cast polarity flip.
+- **Combination shape OR contrast / S-contrast.** Rejected: +recall (→24) costs 3–4× the FP.
+- **Outcome.** §4.8 → 🟢 direction set: overshoot (CLAHE+median) → shape-based gate. Residual
+  ≈10 softest-rim coins. Pending wide-sample (`all_smoke`) validation before `solution.ipynb`.
+- **Artifacts.** `playground.ipynb` (Detection v4 rim-score, v5 ZNCC, v6 shape-based, v7 combo).
+
 ## 7. TODO — high-level milestones
 
 Project-level milestones only. Day-to-day tasks are tracked in the session task
@@ -226,8 +330,8 @@ tracker, not here.
 - [~] **M1** — Reference radii + colour measured; radius found non-metric and colour
       cast-corrupted (DEC-1/DEC-3). Per-denomination calibration to be finalized with
       the scale-grid fit.
-- [ ] **M2** — Detection block tuned on the reference set; validated on at least
-      three target images. Closes §4.5 and §4.6.
+- [~] **M2** — Detection = Hough (DEC-5), validated on a 6-image showcase + full
+      142-image smoke test (2026-05-27). Closes §4.5–§4.7; **§4.8 (weak-rim) open**.
 - [ ] **M3** — Classification block working on the reference set, evaluated
       out-of-sample on the eight reference images themselves (leave-one-out).
       Definitively closes §4.1.
