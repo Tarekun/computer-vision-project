@@ -67,7 +67,12 @@ Desktop.ini
 .scratch/
 TODO.local.md
 all_smoke.ipynb
+docs/
+test.ipynb
+sandbox/
 
+# Backup snapshots (*.bak, *.bak2, *.bak3, ...)
+*.bak*
 # ------------------------------------------------------------------
 # Misc
 # ------------------------------------------------------------------
