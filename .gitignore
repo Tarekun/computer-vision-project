@@ -79,3 +79,9 @@ sandbox/
 *.log
 .env
 .env.local
+
+# Fable experiments (agent sandbox)
+fable/
+
+# Generated label-prep overlays and seeds (produced by v2/label_prep.py)
+v2/label_prep/
