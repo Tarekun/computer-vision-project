@@ -20,7 +20,8 @@ def validate_entry(name, entry):
 
 def merge_agent_output(agent, seeds):
     """agent: labeling-agent JSON; seeds: [{'i','cx','cy','r'}] from baseline detector.
-    Seed labelled 'FP' is dropped; 'extra' coins (missed by detector) are appended."""
+    Seed labelled 'FP' is dropped; 'extra' coins (missed by detector) are appended.
+    Precondition: agent seed indices must exist in seeds; raises KeyError otherwise (fail-fast)."""
     by_i = {s["i"]: s for s in seeds}
     coins = []
     for s in agent.get("seeds", []):

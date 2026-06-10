@@ -28,6 +28,18 @@ class TestSchema(unittest.TestCase):
         out = cross_check_multiset(entry, ["1cent"])       # GT utente dice 1cent
         self.assertFalse(out["coins"][0]["sure"])          # mismatch → sure:false
         self.assertIn("mismatch", out["note"])
+    def test_validate_bad_geometry(self):
+        bad = {"coins":[{"cx":1,"cy":1,"label":"5cent","sure":True}],
+               "tilt":"none","note":""}
+        errs = validate_entry("image_2.jpg", bad)
+        self.assertEqual(len(errs), 1)
+        self.assertIn("bad geometry", errs[0])
+    def test_merge_missing_seed_index(self):
+        seeds = [{"i":0,"cx":100,"cy":100,"r":50}]
+        agent = {"image":"image_2.jpg","tilt":"mild",
+                 "seeds":[{"i":999,"label":"5cent","sure":True,"circle_ok":True}],
+                 "extra":[]}
+        self.assertRaises(KeyError, merge_agent_output, agent, seeds)
 
 if __name__ == "__main__":
     unittest.main()
