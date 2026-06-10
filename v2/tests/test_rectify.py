@@ -31,5 +31,19 @@ class TestRectify(unittest.TestCase):
         h = ys.max() - ys.min(); w = xs.max() - xs.min()
         self.assertLess(abs(h - w) / max(h, w), 0.05)    # tornato tondo
 
+    def test_scene_tilt_agreeing(self):
+        from v2.rectify import scene_tilt
+        t = scene_tilt([{"angle":80.0,"ratio":0.8},{"angle":100.0,"ratio":0.84}])
+        self.assertIsNotNone(t)
+        self.assertAlmostEqual(t["angle"], 90.0, delta=2)
+    def test_scene_tilt_wraparound(self):
+        from v2.rectify import scene_tilt
+        t = scene_tilt([{"angle":5.0,"ratio":0.8},{"angle":175.0,"ratio":0.8}])
+        self.assertIsNotNone(t)
+        self.assertLess(min(t["angle"], 180 - t["angle"]), 6)   # ~0°/180°, NOT 90°
+    def test_scene_tilt_disagreeing(self):
+        from v2.rectify import scene_tilt
+        self.assertIsNone(scene_tilt([{"angle":30.0,"ratio":0.8},{"angle":150.0,"ratio":0.8}]))
+
 if __name__ == "__main__":
     unittest.main()

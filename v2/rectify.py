@@ -38,10 +38,13 @@ def rectify_disc(img, cx, cy, tilt, pad=1.35):
     return crop, float(R)
 
 def scene_tilt(tilts):
-    """Shared scene tilt: median ratio/angle if >=2 coins agree, else None."""
+    """Shared scene tilt: axial circular mean if >=2 coins agree, else None."""
     ts = [t for t in tilts if t is not None]
     if len(ts) < 2: return None
     angs = np.array([t["angle"] for t in ts])
     rats = np.array([t["ratio"] for t in ts])
     if np.ptp(angs) > 25 and np.ptp((angs + 90) % 180) > 25: return None
-    return {"angle": float(np.median(angs)), "ratio": float(np.median(rats))}
+    # axial data (mod 180): circular mean on doubled angles
+    d = np.deg2rad(2 * angs)
+    mean = math.degrees(math.atan2(np.sin(d).mean(), np.cos(d).mean())) / 2 % 180
+    return {"angle": float(mean), "ratio": float(np.median(rats))}
