@@ -85,3 +85,6 @@ fable/
 
 # Generated label-prep overlays and seeds (produced by v2/label_prep.py)
 v2/label_prep/
+
+# Generated GT overlays (produced by v2/gt_overlay.py)
+v2/gt_overlays/
