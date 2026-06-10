@@ -19,7 +19,7 @@ def circle_iou(a, b):
     union = math.pi*(r1*r1 + r2*r2) - inter
     return inter / union
 
-def match_scene(gt, pred, thr=0.5):
+def match_scene(gt, pred, thr=0.5):  # thr=0.5: tollera ~10% di deviazione su centro+raggio
     cands = []
     for i, g in enumerate(gt):
         for j, p in enumerate(pred):
@@ -57,8 +57,10 @@ def scene_metrics(gt, pred, m):
             "exact": n_eval == len(gt) and n_correct == n_eval and not m["fp"] and not m["miss"]}
 
 def evaluate(pred_path, half="dev"):
-    gt = json.load(open(os.path.join(PROJECT, "v2", "gt_pos.json")))
-    pred = json.load(open(pred_path))
+    with open(os.path.join(PROJECT, "v2", "gt_pos.json")) as f:
+        gt = json.load(f)
+    with open(pred_path) as f:
+        pred = json.load(f)
     tot = {"n_eval":0,"n_correct":0,"n_miss":0,"n_fp":0,"count_ok":0,"exact":0,
            "imgs":0,"amount_ae":[], "center_err":[], "radius_errpc":[], "stage":{}}
     for name, entry in gt.items():
