@@ -1,0 +1,150 @@
+[
+ {
+  "image": "image_121.jpg",
+  "tilt": "mild",
+  "seeds": [
+   {
+    "i": 0,
+    "label": "5cent",
+    "sure": true,
+    "circle_ok": true
+   },
+   {
+    "i": 1,
+    "label": "2cent",
+    "sure": false,
+    "circle_ok": true
+   },
+   {
+    "i": 2,
+    "label": "1cent",
+    "sure": true,
+    "circle_ok": true
+   },
+   {
+    "i": 3,
+    "label": "1euro",
+    "sure": true,
+    "circle_ok": true
+   }
+  ],
+  "extra": [],
+  "note": "Strong bluish cast. Seed 0 reads '5 CENT', seed 2 reads '1 CENT'. Seed 3 is bimetallic with big '1': gold ring, silver center (1euro). Seed 1 numeral unreadable (noise wall) but dark copper tone and measured radius 79.8 vs 5cent 95.9 gives ~18.7mm -> 2cent. Mild perspective: scale shrinks toward top of frame."
+ },
+ {
+  "image": "image_122.jpg",
+  "tilt": "mild",
+  "seeds": [
+   {
+    "i": 0,
+    "label": "5cent",
+    "sure": true,
+    "circle_ok": true
+   },
+   {
+    "i": 1,
+    "label": "2cent",
+    "sure": false,
+    "circle_ok": true
+   },
+   {
+    "i": 2,
+    "label": "1cent",
+    "sure": true,
+    "circle_ok": true
+   }
+  ],
+  "extra": [],
+  "note": "Seed 0 reads '5 CENT', seed 2 reads '1 CENT' with globe. Seed 1 unreadable but dark copper, radius 86.5 vs 5cent 98.3 at same height -> ~18.7mm = 2cent. Same coin trio as image_121 minus the 1euro."
+ },
+ {
+  "image": "image_123.jpg",
+  "tilt": "none",
+  "seeds": [
+   {
+    "i": 0,
+    "label": "unknown",
+    "sure": false,
+    "circle_ok": true
+   }
+  ],
+  "extra": [],
+  "note": "Single very dark coin on smooth pink background; multiple denoise/contrast attempts recover no relief or numeral (pure noise). No second coin for relative scale and color is crushed by heavy blue cast (coin BGR ~83/39/30). Truly unreadable; dark patina hints copper family but denomination indeterminable."
+ },
+ {
+  "image": "image_124.jpg",
+  "tilt": "mild",
+  "seeds": [
+   {
+    "i": 0,
+    "label": "1cent",
+    "sure": false,
+    "circle_ok": true
+   },
+   {
+    "i": 1,
+    "label": "5cent",
+    "sure": false,
+    "circle_ok": true
+   }
+  ],
+  "extra": [
+   {
+    "cx": 414,
+    "cy": 378,
+    "r": 68,
+    "label": "10cent",
+    "sure": true
+   }
+  ],
+  "note": "Top coin clearly reads '10 CENT' but has NO green circle -> added as extra (cx 414, cy 378, r 68). Seed 0 shows a faint slanted '1' with globe; seed0/seed1 radius ratio 67.5/83.8=0.805 best matches 1cent/5cent (0.765). Seed 1 dark worn copper, national side, largest copper -> 5cent. Both bottom labels size+glimpse based, not fully readable."
+ },
+ {
+  "image": "image_125.jpg",
+  "tilt": "none",
+  "seeds": [
+   {
+    "i": 0,
+    "label": "20cent",
+    "sure": true,
+    "circle_ok": true
+   }
+  ],
+  "extra": [
+   {
+    "cx": 244,
+    "cy": 396,
+    "r": 78,
+    "label": "1euro",
+    "sure": true
+   }
+  ],
+  "note": "Seed 0 reads '20' (upside down); coin looks silvery due to color degradation but numeral is decisive. Upper-left coin has NO green circle -> extra 1euro: bimetallic with '1' over bars, gold ring, silver center (cx 244, cy 396, r 78). Radii ratio 77.7/74.8 matches 1euro/20cent diameters."
+ },
+ {
+  "image": "image_126.jpg",
+  "tilt": "mild",
+  "seeds": [
+   {
+    "i": 0,
+    "label": "2cent",
+    "sure": false,
+    "circle_ok": true
+   },
+   {
+    "i": 1,
+    "label": "1cent",
+    "sure": false,
+    "circle_ok": true
+   },
+   {
+    "i": 2,
+    "label": "10cent",
+    "sure": true,
+    "circle_ok": true
+   }
+  ],
+  "extra": [],
+  "note": "Seed 2 clearly reads '10' (greenish-gold cast) -> 10cent, used as scale anchor (r=76). Seed 1 shows faint '1' with globe, r=63.5 -> ~16.5mm = 1cent. Seed 0 shows worn national side, dark copper, r=71.3 -> ~18.5mm = 2cent (5cent would need r>81)."
+ }
+]

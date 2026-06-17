@@ -1,0 +1,263 @@
+[
+ {
+  "image": "image_25.jpg",
+  "tilt": "none",
+  "seeds": [
+   {
+    "i": 0,
+    "label": "2euro",
+    "sure": true,
+    "circle_ok": true
+   },
+   {
+    "i": 1,
+    "label": "5cent",
+    "sure": true,
+    "circle_ok": true
+   },
+   {
+    "i": 2,
+    "label": "20cent",
+    "sure": true,
+    "circle_ok": true
+   }
+  ],
+  "extra": [],
+  "note": "man made"
+ },
+ {
+  "image": "image_26.jpg",
+  "tilt": "none",
+  "seeds": [
+   {
+    "i": 0,
+    "label": "1cent",
+    "sure": true,
+    "circle_ok": true
+   },
+   {
+    "i": 1,
+    "label": "2cent",
+    "sure": true,
+    "circle_ok": true
+   }
+   
+  ],
+  "extra": [],
+  "note": "man made"
+ },
+ {
+  "image": "image_27.jpg",
+  "tilt": "none",
+  "seeds": [
+   {
+    "i": 0,
+    "label": "10cent",
+    "sure": true,
+    "circle_ok": true
+   },
+   {
+    "i": 1,
+    "label": "2euro",
+    "sure": true,
+    "circle_ok": true
+   },
+   {
+    "i": 2,
+    "label": "1euro",
+    "sure": true,
+    "circle_ok": true
+   },
+   {
+    "i": 3,
+    "label": "20cent",
+    "sure": true,
+    "circle_ok": true
+   },
+   {
+    "i": 4,
+    "label": "5cent",
+    "sure": true,
+    "circle_ok": true
+   },
+   {
+    "i": 5,
+    "label": "NaC",
+    "sure": true,
+    "circle_ok": true
+   }
+  ],
+  "extra": [],
+  "note": "man made"
+ },
+ {
+  "image": "image_28.jpg",
+  "tilt": "none",
+  "seeds": [
+   {
+    "i": 0,
+    "label": "2cent",
+    "sure": true,
+    "circle_ok": true
+   }
+  ],
+  "extra": [],
+  "note": "man made"
+ },
+ {
+  "image": "image_29.jpg",
+  "tilt": "none",
+  "seeds": [
+   {
+    "i": 0,
+    "label": "1euro",
+    "sure": true,
+    "circle_ok": true
+   }
+  ],
+  "extra": [],
+  "note": "man made"
+ },
+ {
+  "image": "image_30.jpg",
+  "tilt": "none",
+  "seeds": [
+   {
+    "i": 0,
+    "label": "5cent",
+    "sure": true,
+    "circle_ok": true
+   },
+   {
+    "i": 1,
+    "label": "1cent",
+    "sure": true,
+    "circle_ok": true
+   },
+   {
+    "i": 2,
+    "label": "5cent",
+    "sure": true,
+    "circle_ok": true
+   }
+  ],
+  "extra": [],
+  "note": "man made"
+ },
+ {
+  "image": "image_31.jpg",
+  "tilt": "none",
+  "seeds": [
+   {
+    "i": 0,
+    "label": "50cent",
+    "sure": true,
+    "circle_ok": true
+   },
+   {
+    "i": 1,
+    "label": "1euro",
+    "sure": true,
+    "circle_ok": true
+   }
+  ],
+  "extra": [],
+  "note": "man made"
+ },
+ {
+  "image": "image_32.jpg",
+  "tilt": "none",
+  "seeds": [
+   {
+    "i": 0,
+    "label": "1euro",
+    "sure": true,
+    "circle_ok": true
+   },
+   {
+    "i": 1,
+    "label": "10cent",
+    "sure": true,
+    "circle_ok": true
+   },
+   {
+    "i": 2,
+    "label": "20cent",
+    "sure": true,
+    "circle_ok": true
+   },
+   {
+    "i": 3,
+    "label": "NaC",
+    "sure": true,
+    "circle_ok": true
+   }
+  ],
+  "extra": [],
+  "note": "man made"
+ },
+ {
+  "image": "image_33.jpg",
+  "tilt": "none",
+  "seeds": [
+   {
+    "i": 0,
+    "label": "2cent",
+    "sure": true,
+    "circle_ok": true
+   }
+  ],
+  "extra": [],
+  "note": "man made"
+ },
+ {
+  "image": "image_34.jpg",
+  "tilt": "none",
+  "seeds": [
+   {
+    "i": 0,
+    "label": "50cent",
+    "sure": true,
+    "circle_ok": true
+   }
+  ],
+  "extra": [],
+  "note": "man made"
+ },
+ {
+  "image": "image_35.jpg",
+  "tilt": "none",
+  "seeds": [
+   {
+    "i": 0,
+    "label": "20cent",
+    "sure": true,
+    "circle_ok": true
+   }
+  ],
+  "extra": [],
+  "note": "man made"
+ },
+ {
+  "image": "image_36.jpg",
+  "tilt": "none",
+  "seeds": [
+   {
+    "i": 0,
+    "label": "2euro",
+    "sure": true,
+    "circle_ok": true
+   },
+   {
+    "i": 10,
+    "label": "1euro",
+    "sure": true,
+    "circle_ok": true
+   }
+  ],
+  "extra": [],
+  "note": "man made"
+ }
+]
+ 
+

@@ -1,0 +1,118 @@
+[
+ {
+  "image": "image_19.jpg",
+  "tilt": "none",
+  "seeds": [
+   {
+    "i": 0,
+    "label": "50cent",
+    "sure": true,
+    "circle_ok": true
+   }
+  ],
+  "extra": [],
+  "note": "Single coin, numeral 50 clearly readable on zoom. Strong bluish color cast (gold tone not visible)."
+ },
+ {
+  "image": "image_20.jpg",
+  "tilt": "mild",
+  "seeds": [
+   {
+    "i": 0,
+    "label": "5cent",
+    "sure": true,
+    "circle_ok": true
+   },
+   {
+    "i": 1,
+    "label": "2cent",
+    "sure": false,
+    "circle_ok": true
+   },
+   {
+    "i": 2,
+    "label": "1cent",
+    "sure": true,
+    "circle_ok": true
+   }
+  ],
+  "extra": [],
+  "note": "Seed 0 shows numeral 5 + CENT + globe. Seed 2 shows numeral 1 + globe. Seed 1 face is worn/unreadable even after denoise+CLAHE; sized between seed 2 (1c) and seed 0 (5c), ratio to 5c ~0.84-0.88, so 2cent by relative size, copper family assumed. Bluish cast, oblique view."
+ },
+ {
+  "image": "image_21.jpg",
+  "tilt": "none",
+  "seeds": [
+   {
+    "i": 0,
+    "label": "2cent",
+    "sure": false,
+    "circle_ok": true
+   }
+  ],
+  "extra": [],
+  "note": "Very dark, nearly illegible coin. After denoise/contrast stretch a large oval/disc relief is visible lower-right (globe of 1/2/5c common face, or Colosseum of Italian 5c national side); both readings point to copper family, guessed 5cent. Low confidence."
+ },
+ {
+  "image": "image_22.jpg",
+  "tilt": "none",
+  "seeds": [
+   {
+    "i": 0,
+    "label": "2euro",
+    "sure": true,
+    "circle_ok": true
+   }
+  ],
+  "extra": [],
+  "note": "Bimetallic, big numeral 2 with map; outer ring is the SILVER ring (2euro: silver ring, gold center). Colors degraded teal/pink but two-tone ring visible."
+ },
+ {
+  "image": "image_23.jpg",
+  "tilt": "none",
+  "seeds": [
+   {
+    "i": 0,
+    "label": "20cent",
+    "sure": true,
+    "circle_ok": true
+   }
+  ],
+  "extra": [
+   {
+    "cx": 413,
+    "cy": 394,
+    "r": 80,
+    "label": "5cent",
+    "sure": true
+   }
+  ],
+  "note": "Seed 0 reads 20 EURO CENT clearly. Detector missed the upper coin: numeral 5 + CENT + globe clearly readable (extra, Hough-fit cx=413 cy=394 r=80 in original coords). Strong bluish cast on both coins."
+ },
+ {
+  "image": "image_24.jpg",
+  "tilt": "none",
+  "seeds": [
+   {
+    "i": 0,
+    "label": "5cent",
+    "sure": true,
+    "circle_ok": true
+   },
+   {
+    "i": 1,
+    "label": "10cent",
+    "sure": true,
+    "circle_ok": true
+   },
+   {
+    "i": 2,
+    "label": "20cent",
+    "sure": true,
+    "circle_ok": true
+   }
+  ],
+  "extra": [],
+  "note": "Asphalt/stone background. Seed 0: 5 EURO CENT, copper-pink, slightly overlapped by neighbors but circle fits. Seed 1: numeral 10, greenish-degraded gold. Seed 2: 20 EURO CENT. Relative radii (10c:5c:20c = 91:98:103) match real diameters well."
+ }
+]

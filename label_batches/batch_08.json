@@ -1,0 +1,160 @@
+[
+ {
+  "image": "image_49.jpg",
+  "tilt": "none",
+  "seeds": [
+   {
+    "i": 0,
+    "label": "50cent",
+    "sure": true,
+    "circle_ok": true
+   },
+   {
+    "i": 1,
+    "label": "20cent",
+    "sure": true,
+    "circle_ok": true
+   },
+   {
+    "i": 2,
+    "label": "1euro",
+    "sure": false,
+    "circle_ok": true
+   }
+  ],
+  "extra": [],
+  "note": "Strong blue cast. Seed0: numeral 50 clear. Seed1: rotated 20 readable, radius ratio to 50c fits. Seed2: two-tone coin with dark center; measured r=85 vs 50c r=87 -> size says 1euro (2euro would be larger than 50c); outer ring reads warm/gold-ish in R-B terms, supporting gold ring = 1euro, but tarnish makes the dark center look gold-like (2euro pattern), hence sure:false."
+ },
+ {
+  "image": "image_50.jpg",
+  "tilt": "none",
+  "seeds": [
+   {
+    "i": 0,
+    "label": "2cent",
+    "sure": false,
+    "circle_ok": true
+   },
+   {
+    "i": 1,
+    "label": "1cent",
+    "sure": true,
+    "circle_ok": true
+   }
+  ],
+  "extra": [],
+  "note": "Two heavily tarnished dark coins on noisy fabric-like background; color unusable even after white balance. Seed1 shows a faint single/double digit (2-ish hook, maybe 20); radius ratio s1/s0=0.92 best fits (20c,50c) pair, and the coins match the dark 20c/50c set seen in image_49. Both labels size-based guesses."
+ },
+ {
+  "image": "image_51.jpg",
+  "tilt": "mild",
+  "seeds": [
+   {
+    "i": 0,
+    "label": "20cent",
+    "sure": false,
+    "circle_ok": true
+   },
+   {
+    "i": 1,
+    "label": "20cent",
+    "sure": true,
+    "circle_ok": true
+   },
+   {
+    "i": 2,
+    "label": "20cent",
+    "sure": true,
+    "circle_ok": true
+   },
+   {
+    "i": 3,
+    "label": "20cent",
+    "sure": true,
+    "circle_ok": true
+   }
+  ],
+  "extra": [],
+  "note": "Seeds 1,2,3 all show a clear 20 numeral (s3 upside down). Seed0 is fully tarnished/unreadable but its radius (84) matches adjacent 20c seed1 (83.5) at the same image height -> 20cent by size. Noticeable scale gradient top-to-bottom (76.5 vs 84 px for same denomination) -> mild tilt."
+ },
+ {
+  "image": "image_52.jpg",
+  "tilt": "mild",
+  "seeds": [
+   {
+    "i": 0,
+    "label": "20cent",
+    "sure": true,
+    "circle_ok": true
+   },
+   {
+    "i": 1,
+    "label": "50cent",
+    "sure": true,
+    "circle_ok": true
+   },
+   {
+    "i": 2,
+    "label": "20cent",
+    "sure": false,
+    "circle_ok": true
+   },
+   {
+    "i": 3,
+    "label": "20cent",
+    "sure": false,
+    "circle_ok": true
+   },
+   {
+    "i": 4,
+    "label": "5cent",
+    "sure": true,
+    "circle_ok": true
+   },
+   {
+    "i": 5,
+    "label": "50cent",
+    "sure": true,
+    "circle_ok": true
+   }
+  ],
+  "extra": [],
+  "note": "Readable numerals: s0=20, s1=50, s4=5 (globe), s5=50. s2 and s3 fully tarnished black, no bimetal contrast detectable. s3 measures larger than the adjacent 50c s1 (r~86-91 vs 84, same height); size estimates cluster ~25mm -> 2euro, but 50cent not excluded. s2 size estimates span 20c-50c depending on perspective calibration (the two 50c coins measure 94 vs 84 px at different heights -> mild tilt); 20cent is the median fit."
+ },
+ {
+  "image": "image_53.jpg",
+  "tilt": "none",
+  "seeds": [
+   {
+    "i": 0,
+    "label": "50cent",
+    "sure": true,
+    "circle_ok": true
+   }
+  ],
+  "extra": [],
+  "note": "Single coin, numeral 50 clearly visible. Circle well centered and sized."
+ },
+ {
+  "image": "image_54.jpg",
+  "tilt": "none",
+  "seeds": [
+   {
+    "i": 0,
+    "label": "5cent",
+    "sure": true,
+    "circle_ok": true
+   }
+  ],
+  "extra": [
+   {
+    "cx": 551,
+    "cy": 482,
+    "r": 92,
+    "label": "1euro",
+    "sure": true
+   }
+  ],
+  "note": "Seed0: EURO CENT text and 5 with globe clear -> 5cent. The right coin has NO green circle: bimetallic with a big 1 numeral -> 1euro (outer ring gold, looks greenish under the color cast); detector missed it."
+ }
+]

@@ -1,0 +1,146 @@
+[
+ {
+  "image": "image_97.jpg",
+  "tilt": "none",
+  "seeds": [
+   {
+    "i": 0,
+    "label": "2euro",
+    "sure": true,
+    "circle_ok": true
+   },
+   {
+    "i": 1,
+    "label": "20cent",
+    "sure": true,
+    "circle_ok": true
+   },
+   {
+    "i": 2,
+    "label": "50cent",
+    "sure": false,
+    "circle_ok": true
+   },
+   {
+    "i": 3,
+    "label": "1euro",
+    "sure": false,
+    "circle_ok": true
+   }
+  ],
+  "extra": [],
+  "note": "Strong blue cast, heavy noise. s0: big '2' and inner-circle boundary clearly visible, largest coin; bimetal 2euro, ring brighter (silver ring, dark gold centre). s1: big '2(0)' numeral readable, size 22.9mm at 2euro scale -> 20cent. s2 and s3 both r=83 (~23.7mm), between 50c(24.25) and 1euro(23.25): s2 uniform brighter gold-ish, effigy-like national face -> 50cent guess; s3 very dark warm centre with brighter rim (faint bimetal look) -> 1euro guess, could be 50cent."
+ },
+ {
+  "image": "image_98.jpg",
+  "tilt": "none",
+  "seeds": [
+   {
+    "i": 0,
+    "label": "10cent",
+    "sure": true,
+    "circle_ok": true
+   },
+   {
+    "i": 1,
+    "label": "2euro",
+    "sure": true,
+    "circle_ok": true
+   },
+   {
+    "i": 2,
+    "label": "5cent",
+    "sure": true,
+    "circle_ok": true
+   },
+   {
+    "i": 3,
+    "label": "1cent",
+    "sure": true,
+    "circle_ok": true
+   }
+  ],
+  "extra": [],
+  "note": "Blue cast but numerals readable after stretch. s0: '10' clear. s2: globe + big '5' (5c common face). s3: big '1' + globe, smallest. s1: largest, clear inner-circle bimetal boundary, faint '2'; relative sizes all consistent (scale 7.2 px/mm: 25.7/19.7/20.5/15.8mm). 2euro ring slightly brighter (silver ring)."
+ },
+ {
+  "image": "image_99.jpg",
+  "tilt": "none",
+  "seeds": [
+   {
+    "i": 0,
+    "label": "unknown",
+    "sure": false,
+    "circle_ok": true
+   }
+  ],
+  "extra": [],
+  "note": "Single coin, extreme sensor noise; NLM+CLAHE+rotations show no readable relief, no numeral, no bimetal ring. Dark uniform blue tone; absolute scale unusable on mono-coin images -> truly unreadable."
+ },
+ {
+  "image": "image_100.jpg",
+  "tilt": "none",
+  "seeds": [
+   {
+    "i": 0,
+    "label": "unknown",
+    "sure": false,
+    "circle_ok": true
+   }
+  ],
+  "extra": [],
+  "note": "Single small dark blue coin, noise-dominated like image_99; no numeral, no ring structure visible even after denoise/CLAHE/rotation. No scale anchor -> unreadable."
+ },
+ {
+  "image": "image_101.jpg",
+  "tilt": "none",
+  "seeds": [
+   {
+    "i": 0,
+    "label": "50cent",
+    "sure": false,
+    "circle_ok": true
+   },
+   {
+    "i": 1,
+    "label": "20cent",
+    "sure": true,
+    "circle_ok": true
+   },
+   {
+    "i": 2,
+    "label": "2euro",
+    "sure": true,
+    "circle_ok": true
+   }
+  ],
+  "extra": [],
+  "note": "Dark blue cast. s2: clear bimetal inner circle, largest (r=80), ring cooler/brighter than warm centre -> 2euro, silver ring. s1: '20' readable after rotation, 22.9mm at 2euro scale -> 20cent. s0: 24.8mm -> 50cent by size; national face with central effigy and radiating lines (Dutch-style), no numeral visible."
+ },
+ {
+  "image": "image_102.jpg",
+  "tilt": "none",
+  "seeds": [
+   {
+    "i": 0,
+    "label": "2cent",
+    "sure": false,
+    "circle_ok": true
+   },
+   {
+    "i": 1,
+    "label": "20cent",
+    "sure": false,
+    "circle_ok": true
+   },
+   {
+    "i": 2,
+    "label": "20cent",
+    "sure": true,
+    "circle_ok": true
+   }
+  ],
+  "extra": [],
+  "note": "s2: big '20' clearly readable plus Spanish-flower scalloped edge -> 20cent. s1: identical radius to s2 (r=69 ~22.25mm) -> 20cent by size; national face (striding-figure design, Boccioni-like, Italian 20c), no numeral. s0: r=61 ~19.7mm, much darker (copper-like) but face pure noise; between 2cent(18.75) and 10cent(19.75); dark copper tone -> 2cent guess, could be 10cent."
+ }
+]

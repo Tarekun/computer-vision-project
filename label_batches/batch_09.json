@@ -1,0 +1,124 @@
+[
+ {
+  "image": "image_55.jpg",
+  "tilt": "none",
+  "seeds": [
+   {
+    "i": 0,
+    "label": "2euro",
+    "sure": false,
+    "circle_ok": true
+   }
+  ],
+  "extra": [
+   {
+    "cx": 280,
+    "cy": 495,
+    "r": 96,
+    "label": "1euro",
+    "sure": false
+   }
+  ],
+  "note": "Strong bluish/desaturated cast. Seed 0: bimetallic, numeral '2' readable in center; outer ring appears warm/gold-ish due to cast (should be silver ring) - tones unreliable, hence sure:false. Extra coin top-left of it (partially overlapped by the 2euro): bimetallic look, silver-ish ring, big '1' with stripes readable = 1 euro common face (gold ring in reality); it is ~0.8x the 2euro radius, slightly small for 1euro but circle fit is rough."
+ },
+ {
+  "image": "image_56.jpg",
+  "tilt": "none",
+  "seeds": [
+   {
+    "i": 0,
+    "label": "20cent",
+    "sure": true,
+    "circle_ok": true
+   }
+  ],
+  "extra": [],
+  "note": "Single coin, teal/green cast on Nordic gold. Rotated ~90 deg: big '20' over 'EURO CENT' clearly readable after CLAHE; edge shows the slightly scalloped Spanish-flower profile typical of 20cent."
+ },
+ {
+  "image": "image_57.jpg",
+  "tilt": "none",
+  "seeds": [
+   {
+    "i": 0,
+    "label": "2euro",
+    "sure": true,
+    "circle_ok": true
+   },
+   {
+    "i": 1,
+    "label": "50cent",
+    "sure": true,
+    "circle_ok": true
+   },
+   {
+    "i": 2,
+    "label": "10cent",
+    "sure": true,
+    "circle_ok": true
+   }
+  ],
+  "extra": [],
+  "note": "Seed 0: bimetallic, silver ring, big '2' + map (common face), largest coin. Seed 1: '50' readable upside down, dark gold under cast, bigger than seed 2. Seed 2: '10' readable upside down. Sizes fully consistent. Small translucent blob above the coins (~(270,280) orig) is a resin/glass droplet, NOT a coin - correctly not circled."
+ },
+ {
+  "image": "image_58.jpg",
+  "tilt": "none",
+  "seeds": [
+   {
+    "i": 0,
+    "label": "2euro",
+    "sure": true,
+    "circle_ok": true
+   },
+   {
+    "i": 1,
+    "label": "50cent",
+    "sure": true,
+    "circle_ok": true
+   },
+   {
+    "i": 2,
+    "label": "1euro",
+    "sure": true,
+    "circle_ok": true
+   }
+  ],
+  "extra": [],
+  "note": "Bluish cast. Seed 1: '50' clearly readable (r=65px). Seed 0: bimetallic with tree design (French national side), r=71px > 50cent, so silver-ring 2euro (ring tone obscured by cast). Seed 2: bimetallic, r=64px, smaller than the 50cent and clearly smaller than seed 0 -> gold-ring 1euro; center design resembles Greek owl national side. Size ratios match 25.75/24.25/23.25 mm almost exactly."
+ },
+ {
+  "image": "image_59.jpg",
+  "tilt": "none",
+  "seeds": [
+   {
+    "i": 0,
+    "label": "5cent",
+    "sure": true,
+    "circle_ok": true
+   },
+   {
+    "i": 1,
+    "label": "20cent",
+    "sure": true,
+    "circle_ok": true
+   }
+  ],
+  "extra": [],
+  "note": "Seed 1: '20' clearly readable. Seed 0: very dark, heavily tarnished coin (L~37 vs bg 109), relief almost gone, no bimetallic ring contrast visible; relative size vs the confirmed 20cent gives ~24-25mm -> 50cent most consistent (1euro/2euro fit worse and no two-tone visible). Faint design could be a national side (eagle/figure) but unreadable."
+ },
+ {
+  "image": "image_60.jpg",
+  "tilt": "none",
+  "seeds": [
+   {
+    "i": 0,
+    "label": "1cent",
+    "sure": true,
+    "circle_ok": true
+   }
+  ],
+  "extra": [],
+  "note": "Single very dark coin (L~46-61 vs bg 142). Tried NLM denoise, per-channel percentile stretch and CLAHE: surface is completely worn/tarnished, zero legible relief, no numeral, no bimetallic contrast, only a thin plain rim. Truly unreadable -> unknown. Apparent radius (72px) similar to the large dark coin of image_59, but absolute scale across images is unreliable."
+ }
+]

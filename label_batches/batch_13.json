@@ -1,0 +1,134 @@
+[
+ {
+  "image": "image_79.jpg",
+  "tilt": "none",
+  "seeds": [
+   {
+    "i": 0,
+    "label": "2euro",
+    "sure": true,
+    "circle_ok": true
+   },
+   {
+    "i": 1,
+    "label": "10cent",
+    "sure": true,
+    "circle_ok": true
+   },
+   {
+    "i": 2,
+    "label": "20cent",
+    "sure": true,
+    "circle_ok": true
+   },
+   {
+    "i": 3,
+    "label": "5cent",
+    "sure": false,
+    "circle_ok": true
+   },
+   {
+    "i": 4,
+    "label": "50cent",
+    "sure": true,
+    "circle_ok": true
+   }
+  ],
+  "extra": [],
+  "note": "Seed 0 bimetallic with clear inner-circle boundary and '2'+map relief; outer ring should be silver but strong blue/green cast makes tones unverifiable; it is the largest coin (~25.7mm vs the 50c anchor) so 2euro. Seed 3 completely worn flat, no numeral; relative size ~21.3mm suggests 5cent and it reads redder than the gold coins. Seeds 1,2,4 numerals readable after zoom (10, 20, 50)."
+ },
+ {
+  "image": "image_80.jpg",
+  "tilt": "none",
+  "seeds": [
+   {
+    "i": 0,
+    "label": "10cent",
+    "sure": true,
+    "circle_ok": true
+   },
+   {
+    "i": 1,
+    "label": "2cent",
+    "sure": false,
+    "circle_ok": true
+   }
+  ],
+  "extra": [],
+  "note": "Seed 0 shows a clear '10'. Seed 1 is dark copper, visibly SMALLER than the 10c (so cannot be 20c despite the big-numeral-plus-globe look); ~18mm relative size matches 2cent. Strong bluish cast on whole photo."
+ },
+ {
+  "image": "image_81.jpg",
+  "tilt": "none",
+  "seeds": [
+   {
+    "i": 0,
+    "label": "50cent",
+    "sure": true,
+    "circle_ok": true
+   }
+  ],
+  "extra": [],
+  "note": "Single coin, '50' and 'EURO CENT' readable (coin rotated ~180deg). Heavy blue/teal color cast, gold tone not visible."
+ },
+ {
+  "image": "image_82.jpg",
+  "tilt": "none",
+  "seeds": [
+   {
+    "i": 0,
+    "label": "5cent",
+    "sure": false,
+    "circle_ok": true
+   }
+  ],
+  "extra": [],
+  "note": "Very dark, noise-dominated coin; the globe of the old 1/2/5-cent common face is visible (lower right when upright) but the numeral is unreadable even after denoise/CLAHE/edge attempts. Copper family certain; 5cent guessed from apparent size vs the 50c of image_81 shot on the same background (~20.4mm) - could be 2cent."
+ },
+ {
+  "image": "image_83.jpg",
+  "tilt": "none",
+  "seeds": [
+   {
+    "i": 0,
+    "label": "20cent",
+    "sure": true,
+    "circle_ok": true
+   }
+  ],
+  "extra": [],
+  "note": "Single coin, clear '20' with EURO CENT, new common face. Blue/teal cast hides gold tone."
+ },
+ {
+  "image": "image_84.jpg",
+  "tilt": "none",
+  "seeds": [
+   {
+    "i": 0,
+    "label": "5cent",
+    "sure": true,
+    "circle_ok": true
+   },
+   {
+    "i": 1,
+    "label": "2cent",
+    "sure": false,
+    "circle_ok": true
+   },
+   {
+    "i": 2,
+    "label": "2cent",
+    "sure": false,
+    "circle_ok": true
+   },
+   {
+    "i": 3,
+    "label": "5cent",
+    "sure": true,
+    "circle_ok": true
+   }
+  ],
+  "extra": [],
+  "note": "All four coins dark copper-looking under strong blue cast. Seeds 0 and 3 show a clear '5' + globe (5cent). Seeds 1 and 2 are worn smooth: Hough radii 76px and 81px vs 89px for the 5c anchor give ~18.1mm and ~19.3mm, nearest 2cent for both; seed 2 is borderline with 10cent but its color matches the confirmed coppers."
+ }
+]

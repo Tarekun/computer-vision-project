@@ -1,0 +1,164 @@
+[
+ {
+  "image": "image_37.jpg",
+  "tilt": "none",
+  "seeds": [
+   {
+    "i": 0,
+    "label": "1euro",
+    "sure": true,
+    "circle_ok": true
+   },
+   {
+    "i": 1,
+    "label": "5cent",
+    "sure": false,
+    "circle_ok": true
+   },
+   {
+    "i": 2,
+    "label": "10cent",
+    "sure": true,
+    "circle_ok": true
+   }
+  ],
+  "extra": [],
+  "note": "Strong bluish cast. Seed 0: bimetallic, big '1'+'EURO' legible (gold ring, silver center expected; tones muddy in photo). Seed 2: '10 CENT' legible after rotation. Seed 1: darkest coin, copper-like, globe motif of 1/2/5c face faintly visible; relative size ~22mm is between 5c and 20c, darkness favors 5cent."
+ },
+ {
+  "image": "image_38.jpg",
+  "tilt": "none",
+  "seeds": [
+   {
+    "i": 0,
+    "label": "5cent",
+    "sure": true,
+    "circle_ok": true
+   },
+   {
+    "i": 1,
+    "label": "2euro",
+    "sure": false,
+    "circle_ok": true
+   },
+   {
+    "i": 2,
+    "label": "20cent",
+    "sure": true,
+    "circle_ok": true
+   },
+   {
+    "i": 3,
+    "label": "20cent",
+    "sure": true,
+    "circle_ok": true
+   },
+   {
+    "i": 4,
+    "label": "20cent",
+    "sure": true,
+    "circle_ok": true
+   },
+   {
+    "i": 5,
+    "label": "1cent",
+    "sure": true,
+    "circle_ok": true
+   },
+   {
+    "i": 6,
+    "label": "5cent",
+    "sure": true,
+    "circle_ok": true
+   }
+  ],
+  "extra": [],
+  "note": "Very degraded, lavender cast. Seed 1: largest, bimetallic (silver ring, warm gold center) = 2euro; sets scale. Seed 5: smallest, r matches 1cent (16.4mm), thin '1' stroke visible. Seed 6: '5'-curl + globe stripes, size 21.3mm = 5cent. Seed 4: '2'-swirl + hatched map, 22.6mm = 20cent. Seed 0: 1st-series hatched-countries map face, 21.8mm = 20cent (5cent possible). Seeds 2,3: numerals unreadable, sized 22.2-22.6mm -> 20cent by size only; 5cent not fully excluded."
+ },
+ {
+  "image": "image_39.jpg",
+  "tilt": "none",
+  "seeds": [
+   {
+    "i": 0,
+    "label": "1cent",
+    "sure": true,
+    "circle_ok": true
+   },
+   {
+    "i": 1,
+    "label": "10cent",
+    "sure": true,
+    "circle_ok": true
+   }
+  ],
+  "extra": [],
+  "note": "Seed 1: '10' + CENT clearly legible. Seed 0: dark copper coin, thin serif '1' + hatched globe of 1/2/5c face; relative size 15.9mm vs 10cent reference matches 1cent (16.25mm) almost exactly."
+ },
+ {
+  "image": "image_40.jpg",
+  "tilt": "mild",
+  "seeds": [
+   {
+    "i": 0,
+    "label": "2euro",
+    "sure": true,
+    "circle_ok": true
+   },
+   {
+    "i": 1,
+    "label": "20cent",
+    "sure": true,
+    "circle_ok": true
+   },
+   {
+    "i": 2,
+    "label": "5cent",
+    "sure": true,
+    "circle_ok": true
+   },
+   {
+    "i": 3,
+    "label": "10cent",
+    "sure": true,
+    "circle_ok": true
+   },
+   {
+    "i": 4,
+    "label": "1euro",
+    "sure": false,
+    "circle_ok": true
+   }
+  ],
+  "extra": [],
+  "note": "Denim background, perspective makes apparent sizes inconsistent (mild tilt). Seed 0: bimetallic, big '2'+'EURO' legible = 2euro (ring looked warm/gold due to lighting, numeral wins). Seed 1: '20' clear. Seed 2: '50' legible after rotation. Seed 3: '10 CENT' clear. Seed 4: bimetallic with big '1'+'EURO' layout = 1euro, but tones appear inverted (orange/warm center, pale ring like a 2euro) - trusted numeral over color; set composition (one of each high value) supports 1euro."
+ },
+ {
+  "image": "image_41.jpg",
+  "tilt": "none",
+  "seeds": [
+   {
+    "i": 0,
+    "label": "50cent",
+    "sure": true,
+    "circle_ok": true
+   }
+  ],
+  "extra": [],
+  "note": "Single coin, '50' + 'EURO CENT' clearly legible (2nd-series common face). Green circle well fitted."
+ },
+ {
+  "image": "image_42.jpg",
+  "tilt": "none",
+  "seeds": [
+   {
+    "i": 0,
+    "label": "2euro",
+    "sure": true,
+    "circle_ok": true
+   }
+  ],
+  "extra": [],
+  "note": "Single bimetallic coin, big '2' + 'EURO' legible = 2euro (silver outer ring, darker gold center; ring/center tones muted by cast but numeral unambiguous)."
+ }
+]

@@ -1,0 +1,146 @@
+[
+ {
+  "image": "image_43.jpg",
+  "tilt": "none",
+  "seeds": [
+   {
+    "i": 0,
+    "label": "20cent",
+    "sure": true,
+    "circle_ok": true
+   }
+  ],
+  "extra": [
+   {
+    "cx": 410,
+    "cy": 413,
+    "r": 94,
+    "label": "10cent",
+    "sure": true
+   }
+  ],
+  "note": "Seed 0 shows a clear '20 CENT'. The upper coin (no green circle) shows a clear '10' = 10cent. Strong bluish cast over gravel background; both numerals readable on zoom. Hough-verified extra at (410,413) r=94; size ratio 20c/10c consistent."
+ },
+ {
+  "image": "image_44.jpg",
+  "tilt": "none",
+  "seeds": [
+   {
+    "i": 0,
+    "label": "2euro",
+    "sure": true,
+    "circle_ok": true
+   },
+   {
+    "i": 1,
+    "label": "1euro",
+    "sure": true,
+    "circle_ok": true
+   },
+   {
+    "i": 2,
+    "label": "NaC",
+    "sure": true,
+    "circle_ok": true
+   }
+  ],
+  "extra": [],
+  "note": "Blue carpet background with heavy cast. Seed 0: big '2' + map, bimetallic, outer ring silver = 2euro. Seed 1: clear '1' + map, bimetallic = 1euro (gold ring, tone washed by cast). Seed 2 sits on a bare dark stone patch top-right, no coin = FP. Size ratio seed0/seed1 = 1.09, matches 2euro/1euro."
+ },
+ {
+  "image": "image_45.jpg",
+  "tilt": "none",
+  "seeds": [
+   {
+    "i": 0,
+    "label": "5cent",
+    "sure": false,
+    "circle_ok": true
+   },
+   {
+    "i": 1,
+    "label": "10cent",
+    "sure": true,
+    "circle_ok": true
+   }
+  ],
+  "extra": [
+   {
+    "cx": 514,
+    "cy": 598,
+    "r": 83,
+    "label": "1euro",
+    "sure": false
+   }
+  ],
+  "note": "Seed 1 shows a clear '10'. Seed 0 is a dark copper-face coin (globe+rays common side), numeral unreadable; radius 76 vs 10cent's 71 gives ~21.2mm = 5cent by relative size. Right coin has NO seed: visible bimetallic inner ring, head profile on national side, r=83 -> ~23.1mm = 1euro (silver ring); could conceivably be 50cent but the concentric ring favors 1euro."
+ },
+ {
+  "image": "image_46.jpg",
+  "tilt": "none",
+  "seeds": [
+   {
+    "i": 0,
+    "label": "20cent",
+    "sure": true,
+    "circle_ok": true
+   },
+   {
+    "i": 1,
+    "label": "50cent",
+    "sure": true,
+    "circle_ok": true
+   },
+   {
+    "i": 2,
+    "label": "1euro",
+    "sure": true,
+    "circle_ok": true
+   }
+  ],
+  "extra": [],
+  "note": "Seed 0: clear '20'. Seed 1: clear '50' + CENT. Seed 2: clear '1' + 'EURO' text, bimetallic = 1euro; odd tones under cast (center looks pale cream, gold outer ring appears dark greenish) but the numeral is unmistakable. Relative radii 98/103/104 consistent with 20c < 50c ~ 1euro."
+ },
+ {
+  "image": "image_47.jpg",
+  "tilt": "none",
+  "seeds": [
+   {
+    "i": 0,
+    "label": "5cent",
+    "sure": true,
+    "circle_ok": true
+   },
+   {
+    "i": 1,
+    "label": "50cent",
+    "sure": true,
+    "circle_ok": true
+   }
+  ],
+  "extra": [
+   {
+    "cx": 275,
+    "cy": 679,
+    "r": 91,
+    "label": "1euro",
+    "sure": true
+   }
+  ],
+  "note": "Seed 0: clear '5' + 'EURO CENT' + globe = 5cent. Seed 1: clear '50'. Lower-middle dark coin has NO seed: bimetallic rim visible, design nearly unreadable (faint diagonal stroke, national side); radius 91 vs 50cent's 86 gives ~25.7mm = 2euro (silver ring, very dark/tarnished). 1euro would be smaller than the 50cent, this coin is larger."
+ },
+ {
+  "image": "image_48.jpg",
+  "tilt": "none",
+  "seeds": [
+   {
+    "i": 0,
+    "label": "5cent",
+    "sure": true,
+    "circle_ok": true
+   }
+  ],
+  "extra": [],
+  "note": "Single copper-face coin (globe with rays, 'EURO CENT' text), rotated ~90deg; big numeral '5' readable after contrast enhancement = 5cent. Hough fit (389,559) r=85 matches the green seed circle."
+ }
+]

@@ -1,0 +1,110 @@
+[
+ {
+  "image": "image_7.jpg",
+  "tilt": "none",
+  "seeds": [
+   {
+    "i": 0,
+    "label": "50cent",
+    "sure": true,
+    "circle_ok": true
+   },
+   {
+    "i": 1,
+    "label": "50cent",
+    "sure": true,
+    "circle_ok": true
+   },
+   {
+    "i": 2,
+    "label": "5cent",
+    "sure": true,
+    "circle_ok": true
+   }
+  ],
+  "extra": [],
+  "note": "Seed 1: gold 50cent, numeral '50' plainly readable. Seed 0: dark/tarnished but numeral '50' readable when rotated 90deg, same diameter as seed 1 (Hough r~81 vs 77) -> 50cent. Seed 2: globe common face (1/2/5c family), size ratio ~0.91 of the 50cent -> 21-22mm, only 5cent fits; bowl of '5' visible. Strong bluish color cast on whole image."
+ },
+ {
+  "image": "image_8.jpg",
+  "tilt": "none",
+  "seeds": [
+   {
+    "i": 0,
+    "label": "2cent",
+    "sure": false,
+    "circle_ok": true
+   }
+  ],
+  "extra": [],
+  "note": "Single very dark, noise-degraded coin. Globe of the 1/2/5cent common face clearly visible (offset circle ~45% of diameter), so copper family is certain, but the numeral is unreadable under heavy noise. Guessed 5cent (the dataset's recurring globe-face coin in image_7/12 is a 5cent and the coin appears large in frame). Color uninformative (strong blue cast)."
+ },
+ {
+  "image": "image_9.jpg",
+  "tilt": "none",
+  "seeds": [
+   {
+    "i": 0,
+    "label": "2cent",
+    "sure": false,
+    "circle_ok": true
+   }
+  ],
+  "extra": [],
+  "note": "Single nearly black coin on fabric; bandpass enhancement reveals the globe of the 1/2/5cent common face (top-right when rotated ~45deg), numeral unreadable. Likely the same copper coin as image_8; guessed 5cent. Extremely degraded."
+ },
+ {
+  "image": "image_10.jpg",
+  "tilt": "none",
+  "seeds": [
+   {
+    "i": 0,
+    "label": "10cent",
+    "sure": true,
+    "circle_ok": true
+   }
+  ],
+  "extra": [],
+  "note": "Numeral '10' clearly readable with map/stripes common face. Bluish cast makes the gold look teal but identification is unambiguous."
+ },
+ {
+  "image": "image_11.jpg",
+  "tilt": "none",
+  "seeds": [
+   {
+    "i": 0,
+    "label": "1euro",
+    "sure": false,
+    "circle_ok": true
+   },
+   {
+    "i": 1,
+    "label": "50cent",
+    "sure": true,
+    "circle_ok": true
+   }
+  ],
+  "extra": [],
+  "note": "Seed 1: '50' readable -> 50cent. Seed 0: very worn/tarnished brown coin; concentric inner-circle boundary at ~75% diameter (bimetal-like) and a big '1'-style diagonal stroke; Hough size ratio 0.953 vs the 50cent matches 1euro (expected 0.959) and rules out 20cent and 2euro. 1euro = gold outer ring / silver center, but tarnish prevents confirming the two-tone (measured center even reads warmer than ring), hence sure:false."
+ },
+ {
+  "image": "image_12.jpg",
+  "tilt": "none",
+  "seeds": [
+   {
+    "i": 0,
+    "label": "5cent",
+    "sure": true,
+    "circle_ok": true
+   },
+   {
+    "i": 1,
+    "label": "50cent",
+    "sure": true,
+    "circle_ok": true
+   }
+  ],
+  "extra": [],
+  "note": "Seed 1: '50' clearly readable -> 50cent. Seed 0: 'EURO CENT' + big '5' + globe clearly readable (coin rotated ~180deg) -> 5cent; size ratio 0.906 vs 50cent consistent. Copper looks purple due to color cast."
+ }
+]

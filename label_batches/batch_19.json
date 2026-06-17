@@ -1,0 +1,154 @@
+[
+ {
+  "image": "image_115.jpg",
+  "tilt": "none",
+  "seeds": [
+   {
+    "i": 0,
+    "label": "2euro",
+    "sure": true,
+    "circle_ok": true
+   },
+   {
+    "i": 1,
+    "label": "20cent",
+    "sure": true,
+    "circle_ok": true
+   },
+   {
+    "i": 2,
+    "label": "50cent",
+    "sure": true,
+    "circle_ok": true
+   },
+   {
+    "i": 3,
+    "label": "1euro",
+    "sure": false,
+    "circle_ok": true
+   }
+  ],
+  "extra": [],
+  "note": "s2 digit 50 clear; s1 digit 20 readable. s0 dark coin with tree design (French national side), largest coin (r~67px vs 50c r~62) -> 2euro, gold ring. s3 bimetallic: dark silver ring, lighter gold center, slanted big numeral likely 1 -> 1euro silver ring; degraded so unsure."
+ },
+ {
+  "image": "image_116.jpg",
+  "tilt": "none",
+  "seeds": [
+   {
+    "i": 0,
+    "label": "1euro",
+    "sure": false,
+    "circle_ok": true
+   }
+  ],
+  "extra": [],
+  "note": "Very dark coin, design unreadable. Color analysis shows bimetallic signature: bluish/silver outer ring (R/B 0.58) vs warmer gold-toned center (R/B 0.80) -> 1euro silver ring most likely; single coin so absolute size unusable."
+ },
+ {
+  "image": "image_117.jpg",
+  "tilt": "none",
+  "seeds": [
+   {
+    "i": 0,
+    "label": "5cent",
+    "sure": false,
+    "circle_ok": true
+   }
+  ],
+  "extra": [],
+  "note": "Cent-family common face certain (globe lower-right + radiating stripes visible after CLAHE) but big digit unreadable; strong blue cast hides copper tone. 5cent guessed from apparent size relative to the mono-coin 1euro of image_116 shot in same setting; could be 1c/2c."
+ },
+ {
+  "image": "image_118.jpg",
+  "tilt": "none",
+  "seeds": [
+   {
+    "i": 0,
+    "label": "50cent",
+    "sure": true,
+    "circle_ok": true
+   },
+   {
+    "i": 1,
+    "label": "5cent",
+    "sure": true,
+    "circle_ok": true
+   },
+   {
+    "i": 2,
+    "label": "1euro",
+    "sure": true,
+    "circle_ok": true
+   },
+   {
+    "i": 3,
+    "label": "2cent",
+    "sure": false,
+    "circle_ok": true
+   },
+   {
+    "i": 4,
+    "label": "20cent",
+    "sure": true,
+    "circle_ok": true
+   },
+   {
+    "i": 5,
+    "label": "10cent",
+    "sure": true,
+    "circle_ok": true
+   },
+   {
+    "i": 6,
+    "label": "2euro",
+    "sure": true,
+    "circle_ok": true
+   },
+   {
+    "i": 7,
+    "label": "1cent",
+    "sure": false,
+    "circle_ok": true
+   }
+  ],
+  "extra": [],
+  "note": "Full 8-coin series laid out in two value-descending columns: left 10c,5c,2c,1c (seeds 5,1,3,7), right 2e,1e,50c,20c (seeds 6,2,0,4). Digits 50 (s0), 20 (s4), 10 (s5) read directly after CLAHE+rotation; s1 shows globe and is largest copper (5c); s6 bimetal gold ring/silver center (2euro), s2 silver ring/gold center (1euro). s3/s7 digits unreadable, labels from series order + radii (60 vs 58 px)."
+ },
+ {
+  "image": "image_119.jpg",
+  "tilt": "none",
+  "seeds": [
+   {
+    "i": 0,
+    "label": "unknown",
+    "sure": false,
+    "circle_ok": true
+   }
+  ],
+  "extra": [],
+  "note": "Single very dark featureless disc; CLAHE/denoise reveal only a faint curved arc (possibly globe rim of a cent face). No digit, no usable metal tone (coin strongly blue vs background), mono-coin so no relative scale. Truly unreadable."
+ },
+ {
+  "image": "image_120.jpg",
+  "tilt": "mild",
+  "seeds": [
+   {
+    "i": 0,
+    "label": "5cent",
+    "sure": true,
+    "circle_ok": true
+   }
+  ],
+  "extra": [
+   {
+    "cx": 484,
+    "cy": 560,
+    "r": 97,
+    "label": "1euro",
+    "sure": true
+   }
+  ],
+  "note": "Seed 0: clear 5 + globe + stripes -> 5cent. Detector MISSED the second coin lower-right: clear big 1 with euro map, silver outer ring, gold center -> 1euro at (484,560) r~97 (original pixel coords). Fabric background; 1euro slightly elliptical (axis ratio ~0.93) -> mild tilt."
+ }
+]

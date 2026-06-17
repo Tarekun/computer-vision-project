@@ -1,0 +1,120 @@
+[
+ {
+  "image": "image_61.jpg",
+  "tilt": "none",
+  "seeds": [
+   {
+    "i": 0,
+    "label": "2euro",
+    "sure": true,
+    "circle_ok": true
+   }
+  ],
+  "extra": [],
+  "note": "Single bimetallic coin; big numeral 2 clearly readable after 90deg CCW rotation (coin design rotated in photo). Silver ring, darker gold center. Strong bluish cast over whole image."
+ },
+ {
+  "image": "image_62.jpg",
+  "tilt": "none",
+  "seeds": [
+   {
+    "i": 0,
+    "label": "2cent",
+    "sure": false,
+    "circle_ok": true
+   }
+  ],
+  "extra": [
+   {
+    "cx": 188,
+    "cy": 798,
+    "r": 74,
+    "label": "1euro",
+    "sure": false
+   }
+  ],
+  "note": "Both coins extremely dark/noisy, faces unreadable. Bottom-left uncircled coin (r~74) shows bimetal signature: brighter/cooler ring vs warmer darker center starting ~0.75R -> 1euro with silver ring (gold center). Seed 0 (r~60) flat mono-metal profile; relative size vs the 1euro gives ~21mm -> 5cent guess."
+ },
+ {
+  "image": "image_63.jpg",
+  "tilt": "none",
+  "seeds": [
+   {
+    "i": 0,
+    "label": "2cent",
+    "sure": true,
+    "circle_ok": true
+   },
+   {
+    "i": 1,
+    "label": "2cent",
+    "sure": true,
+    "circle_ok": true
+   },
+   {
+    "i": 2,
+    "label": "1cent",
+    "sure": true,
+    "circle_ok": true
+   }
+  ],
+  "extra": [],
+  "note": "Seed 2 clearly reads '1 CENT' with globe (r~74) -> reliable size anchor. Seed 0 r~97: ratio 1.31 vs 1cent matches 5cent (21.25mm) almost exactly; face unreadable. Seed 1 r~87 -> ~19.1mm, between 2cent and 10cent; ratio and dark coppery tone favor 2cent. All coins same dark copper-family tone under blue cast."
+ },
+ {
+  "image": "image_64.jpg",
+  "tilt": "none",
+  "seeds": [
+   {
+    "i": 0,
+    "label": "1cent",
+    "sure": false,
+    "circle_ok": true
+   }
+  ],
+  "extra": [],
+  "note": "Single very dark coin (r~75). Enhanced crop shows slanted numeral '1' with serif foot left of large globe - same common-face layout as the confirmed 1cent in image_63 (r~74, same fabric background). Copper-family tone. Could conceivably be the '1' of '10' but globe outline and size match 1cent better."
+ },
+ {
+  "image": "image_65.jpg",
+  "tilt": "none",
+  "seeds": [
+   {
+    "i": 0,
+    "label": "unknown",
+    "sure": false,
+    "circle_ok": true
+   }
+  ],
+  "extra": [],
+  "note": "Weakest label of the batch: coin face totally unreadable (uniform dark disc, flat radial profile -> mono-metal, smooth round edge -> not 20cent Spanish flower). Guess based on cross-image scale vs image_62 (same paper background): r~70 vs 5cent r~60 / 2euro r~73.8 there -> ~24.3-24.8mm -> 50cent. Treat with caution; cross-image scale is unreliable."
+ },
+ {
+  "image": "image_66.jpg",
+  "tilt": "none",
+  "seeds": [
+   {
+    "i": 0,
+    "label": "2cent",
+    "sure": true,
+    "circle_ok": true
+   },
+   {
+    "i": 1,
+    "label": "5cent",
+    "sure": true,
+    "circle_ok": true
+   }
+  ],
+  "extra": [
+   {
+    "cx": 526,
+    "cy": 695,
+    "r": 84,
+    "label": "1cent",
+    "sure": true
+   }
+  ],
+  "note": "Seed 1 clearly reads '5' + CENT + globe (r~102). Bottom-right coin has NO green circle: clear '1' + globe -> 1cent (r~84). Seed 0 (r~93.5) unreadable, darkest coin in image: size sits between 2cent (vs 1cent anchor) and 10cent (vs 5cent anchor); heavy dark tarnish favors copper -> 2cent guess, 10cent plausible alternative."
+ }
+]
