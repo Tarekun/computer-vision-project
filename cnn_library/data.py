@@ -1,10 +1,15 @@
 from pathlib import Path
 from PIL import Image
 from torch.utils.data import Dataset
+from torchvision import transforms as T
 
 # the bottom strip of every image is a copyright banner burned in by the
 # dataset authors, not part of the photograph
 COPYRIGHT_BAR_PX = 20
+# FGVC-Aircraft images aren't all the same resolution, so a resize is
+# mandatory just to let the DataLoader stack samples into a batch tensor.
+STD_SHAPING = T.Compose([T.Resize((256, 256)), T.ToTensor()])
+
 
 def _read_lines(path):
     with open(path) as f:
@@ -33,7 +38,9 @@ class FGVCAircraftDataset(Dataset):
     """
 
     def __init__(self, root, split="train", transform=None):
-        self.transform = transform
+        self.transform = (
+            STD_SHAPING if transform is None else T.Compose([STD_SHAPING, transform])
+        )
         data_dir = Path(root) / "data"
 
         self.images_dir = data_dir / "images"
