@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 import torch
 import torch.nn.functional as F
 from torch.nn import (
@@ -10,6 +11,7 @@ from torch.nn import (
     ReLU,
     Sequential,
 )
+from typing import Literal, Optional, Tuple, Union
 
 
 def _as_hw(size):
@@ -173,12 +175,68 @@ class Classifier(Module):
         return self.fc2(x)
 
 
+@dataclass
+class CnnConfig:
+    """Hyperparameters for `Cnn`. Defaults reproduce the module's original,
+    hardcoded defaults, with a `ResidualStage`-based feature extractor."""
+
+    in_channels: int = 3
+    num_classes: int = 100
+
+    # Stem
+    canonical_size: Union[int, Tuple[int, int]] = 256
+    stem_channels: Tuple[int, ...] = (32, 64, 128)
+    stem_kernel_size: int = 3
+
+    # Feature extractor
+    stage_channels: Tuple[int, ...] = (256, 512)
+    stage_stride: int = 2
+    block_type: Literal["resnet", "inception"] = "resnet"
+    resnet_kernel_size: int = 3
+    inception_branch_channels: Optional[Tuple[int, int, int, int]] = None
+    inception_reduce_channels: Optional[int] = None
+
+    # Classifier
+    classifier_hidden_dim: int = 256
+
+
 class Cnn(Module):
-    def __init__(self, stem_kwargs={}, feature_extractor_kwargs={}, classifier_kwargs={}):
+    def __init__(self, config=None):
         super().__init__()
-        self.stem = Stem(**stem_kwargs)
-        self.feature_extractor = FeatureExtractor(**feature_extractor_kwargs)
-        self.classifier = Classifier(**classifier_kwargs)
+        config = config or CnnConfig()
+
+        self.stem = Stem(
+            in_channels=config.in_channels,
+            canonical_size=config.canonical_size,
+            channels=config.stem_channels,
+            kernel_size=config.stem_kernel_size,
+        )
+
+        if config.block_type == "resnet":
+            stage_cls = ResidualStage
+            stage_kwargs = {"kernel_size": config.resnet_kernel_size}
+        elif config.block_type == "inception":
+            stage_cls = InceptionStage
+            stage_kwargs = {
+                "branch_channels": config.inception_branch_channels,
+                "reduce_channels": config.inception_reduce_channels,
+            }
+        else:
+            raise ValueError(f"Unknown block_type: {config.block_type!r}")
+
+        self.feature_extractor = FeatureExtractor(
+            in_channels=config.stem_channels[-1],
+            stage_channels=config.stage_channels,
+            stride=config.stage_stride,
+            stage_cls=stage_cls,
+            stage_kwargs=stage_kwargs,
+        )
+
+        self.classifier = Classifier(
+            in_channels=config.stage_channels[-1],
+            hidden_dim=config.classifier_hidden_dim,
+            num_classes=config.num_classes,
+        )
 
     def forward(self, x):
         x = self.stem(x)

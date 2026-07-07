@@ -47,22 +47,27 @@ def evaluate(model, root, transform=None, batch_size=64, device="cuda"):
 
 def train(
     model,
-    root,
+    loader,
     epochs,
-    transform=None,
-    batch_size=64,
     learning_rate=1e-3,
+    optimizer=None,
+    scheduler=None,
     device="cuda",
+    callback=None,
 ):
-    """Trains on the merged train+val split (`trainval`) for `epochs` epochs"""
+    """Trains on the merged train+val split (`trainval`) for `epochs` epochs.
 
-    loader = DataLoader(
-        FGVCAircraftDataset(root, split="trainval", transform=transform),
-        batch_size=batch_size,
-        shuffle=True,
-    )
+    `optimizer` defaults to `Adam(model.parameters(), lr=learning_rate)` when
+    not given, so callers who want a different optimizer (e.g. `SGD` with
+    momentum, or per-group learning rates) can build one themselves.
+    `scheduler.step()` runs after every epoch, if a scheduler is given.
+    `callback(epoch, loss, accuracy)` also runs after every epoch, useful for
+    collecting a training history to plot.
+    """
+
     criterion = nn.CrossEntropyLoss()
-    optimizer = Adam(model.parameters(), lr=learning_rate)
+    if optimizer is None:
+        optimizer = Adam(model.parameters(), lr=learning_rate)
     model.to(device)
 
     epoch_durations = []
@@ -71,6 +76,10 @@ def train(
         loss, accuracy = _run_epoch(
             model, loader, criterion, optimizer=optimizer, device=device
         )
+        if scheduler is not None:
+            scheduler.step()
+        if callback is not None:
+            callback(epoch, loss, accuracy)
         duration = time.perf_counter() - start
         epoch_durations.append(duration)
 
