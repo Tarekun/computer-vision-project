@@ -8,10 +8,22 @@ from torch.nn import (
     Linear,
     MaxPool2d,
     Module,
+    Parameter,
     ReLU,
     Sequential,
 )
 from typing import Literal, Optional, Tuple, Union
+
+
+class GeMPool(Module):
+    def __init__(self, p: float = 3.0, eps: float = 1e-6) -> None:
+        super().__init__()
+        self.p = Parameter(torch.tensor(p))
+        self.eps = eps
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        p = self.p.clamp(min=1.0, max=8.0)
+        return F.adaptive_avg_pool2d(x.clamp(min=self.eps).pow(p), 1).pow(1.0 / p)
 
 
 def _as_hw(size):
@@ -26,7 +38,9 @@ class Stem(Module):
     output is 256 / 2**3 = 32 pixels per side, at `channels[-1]` channels.
     """
 
-    def __init__(self, in_channels=3, canonical_size=256, channels=(32, 64, 128), kernel_size=3):
+    def __init__(
+        self, in_channels=3, canonical_size=256, channels=(32, 64, 128), kernel_size=3
+    ):
         super().__init__()
         self.canonical_size = _as_hw(canonical_size)
 
@@ -35,7 +49,9 @@ class Stem(Module):
         prev_channels = in_channels
         for out_channels in channels:
             blocks += [
-                Conv2d(prev_channels, out_channels, kernel_size, padding=kernel_padding),
+                Conv2d(
+                    prev_channels, out_channels, kernel_size, padding=kernel_padding
+                ),
                 BatchNorm2d(out_channels),
                 ReLU(inplace=True),
                 MaxPool2d(2),
@@ -44,7 +60,9 @@ class Stem(Module):
         self.blocks = Sequential(*blocks)
 
     def forward(self, x):
-        x = F.interpolate(x, size=self.canonical_size, mode="bilinear", align_corners=False)
+        x = F.interpolate(
+            x, size=self.canonical_size, mode="bilinear", align_corners=False
+        )
         return self.blocks(x)
 
 
@@ -56,7 +74,9 @@ class ResidualStage(Module):
         super().__init__()
         padding = kernel_size // 2
 
-        self.conv1 = Conv2d(in_channels, out_channels, kernel_size, stride=stride, padding=padding)
+        self.conv1 = Conv2d(
+            in_channels, out_channels, kernel_size, stride=stride, padding=padding
+        )
         self.bn1 = BatchNorm2d(out_channels)
         self.conv2 = Conv2d(out_channels, out_channels, kernel_size, padding=padding)
         self.bn2 = BatchNorm2d(out_channels)
@@ -88,10 +108,19 @@ class InceptionStage(Module):
     as in GoogLeNet.
     """
 
-    def __init__(self, in_channels, out_channels, stride=2, branch_channels=None, reduce_channels=None):
+    def __init__(
+        self,
+        in_channels,
+        out_channels,
+        stride=2,
+        branch_channels=None,
+        reduce_channels=None,
+    ):
         super().__init__()
 
-        pool_channels, conv1_channels, conv3_channels, conv5_channels = branch_channels or _split_channels(out_channels, 4)
+        pool_channels, conv1_channels, conv3_channels, conv5_channels = (
+            branch_channels or _split_channels(out_channels, 4)
+        )
         if reduce_channels is None:
             reduce_channels = max(out_channels // 4, 1)
 
@@ -110,7 +139,9 @@ class InceptionStage(Module):
             Conv2d(in_channels, reduce_channels, kernel_size=1),
             BatchNorm2d(reduce_channels),
             ReLU(inplace=True),
-            Conv2d(reduce_channels, conv3_channels, kernel_size=3, stride=stride, padding=1),
+            Conv2d(
+                reduce_channels, conv3_channels, kernel_size=3, stride=stride, padding=1
+            ),
             BatchNorm2d(conv3_channels),
             ReLU(inplace=True),
         )
@@ -118,7 +149,9 @@ class InceptionStage(Module):
             Conv2d(in_channels, reduce_channels, kernel_size=1),
             BatchNorm2d(reduce_channels),
             ReLU(inplace=True),
-            Conv2d(reduce_channels, conv5_channels, kernel_size=5, stride=stride, padding=2),
+            Conv2d(
+                reduce_channels, conv5_channels, kernel_size=5, stride=stride, padding=2
+            ),
             BatchNorm2d(conv5_channels),
             ReLU(inplace=True),
         )
@@ -128,7 +161,12 @@ class InceptionStage(Module):
 
     def forward(self, x):
         identity = self.shortcut(x)
-        branches = [self.pool_branch(x), self.conv1_branch(x), self.conv3_branch(x), self.conv5_branch(x)]
+        branches = [
+            self.pool_branch(x),
+            self.conv1_branch(x),
+            self.conv3_branch(x),
+            self.conv5_branch(x),
+        ]
         out = torch.cat(branches, dim=1)
         return self.activation(out + identity)
 
@@ -143,14 +181,23 @@ class FeatureExtractor(Module):
     default output) becomes 512 channels at 8x8 (32 / 2**2).
     """
 
-    def __init__(self, in_channels=128, stage_channels=(256, 512), stride=2, stage_cls=ResidualStage, stage_kwargs=None):
+    def __init__(
+        self,
+        in_channels=128,
+        stage_channels=(256, 512),
+        stride=2,
+        stage_cls=ResidualStage,
+        stage_kwargs=None,
+    ):
         super().__init__()
         stage_kwargs = stage_kwargs or {}
 
         stages = []
         prev_channels = in_channels
         for out_channels in stage_channels:
-            stages.append(stage_cls(prev_channels, out_channels, stride=stride, **stage_kwargs))
+            stages.append(
+                stage_cls(prev_channels, out_channels, stride=stride, **stage_kwargs)
+            )
             prev_channels = out_channels
         self.stages = Sequential(*stages)
 
@@ -242,3 +289,87 @@ class Cnn(Module):
         x = self.stem(x)
         x = self.feature_extractor(x)
         return self.classifier(x)
+
+    def __init__(
+        self, spec: ModelSpec, num_classes: int = 100, head_dropout: float = 0.35
+    ):
+        super().__init__()
+        self.spec = spec
+        block = PreActBlock if spec.preactivation else PostActBlock
+        channels = spec.channels
+        self.in_channels = channels[0]
+        self.stem = nn.Sequential(
+            nn.Conv2d(3, channels[0], 3, 2, 1, bias=False),
+            nn.BatchNorm2d(channels[0]),
+            nn.ReLU(inplace=True),
+            nn.Conv2d(channels[0], channels[0], 3, 1, 1, bias=False),
+            nn.BatchNorm2d(channels[0]),
+            nn.ReLU(inplace=True),
+            nn.Conv2d(channels[0], channels[0], 3, 1, 1, bias=False),
+            nn.BatchNorm2d(channels[0]),
+            nn.ReLU(inplace=True),
+        )
+        strides = (
+            1,
+            1 if spec.delayed_downsampling else 2,
+            2,
+            1 if spec.dilated_stage4 else 2,
+        )
+        dilations = (1, 1, 1, 2 if spec.dilated_stage4 else 1)
+        self.stages = nn.ModuleList(
+            [
+                self._make_stage(block, c, n, s, d, spec.use_se)
+                for c, n, s, d in zip(channels, spec.layers, strides, dilations)
+            ]
+        )
+        self.pool = GeMPool() if spec.gem_pool else nn.AdaptiveAvgPool2d(1)
+        feature_dim = channels[-1] + (channels[-2] if spec.multiscale else 0)
+        if spec.mlp_head:
+            self.classifier = nn.Sequential(
+                nn.Linear(feature_dim, 512),
+                nn.BatchNorm1d(512),
+                nn.ReLU(inplace=True),
+                nn.Dropout(0.4),
+                nn.Linear(512, num_classes),
+            )
+        else:
+            self.classifier = nn.Sequential(
+                nn.Dropout(head_dropout), nn.Linear(feature_dim, num_classes)
+            )
+        self._init_weights()
+
+    def _make_stage(self, block, out_channels, count, stride, dilation, use_se):
+        modules = [block(self.in_channels, out_channels, stride, dilation, use_se)]
+        self.in_channels = out_channels
+        modules.extend(
+            block(out_channels, out_channels, 1, dilation, use_se)
+            for _ in range(1, count)
+        )
+        return nn.Sequential(*modules)
+
+    def _pooled(self, x):
+        return self.pool(x).flatten(1)
+
+    def forward(self, x):
+        x = self.stem(x)
+        x = self.stages[0](x)
+        x = self.stages[1](x)
+        stage3 = self.stages[2](x)
+        stage4 = self.stages[3](stage3)
+        features = self._pooled(stage4)
+        if self.spec.multiscale:
+            features = torch.cat((self._pooled(stage3), features), dim=1)
+        return self.classifier(features)
+
+    def _init_weights(self):
+        for module in self.modules():
+            if isinstance(module, nn.Conv2d):
+                nn.init.kaiming_normal_(
+                    module.weight, mode="fan_out", nonlinearity="relu"
+                )
+            elif isinstance(module, (nn.BatchNorm1d, nn.BatchNorm2d)):
+                nn.init.ones_(module.weight)
+                nn.init.zeros_(module.bias)
+            elif isinstance(module, nn.Linear):
+                nn.init.normal_(module.weight, 0.0, 0.01)
+                nn.init.zeros_(module.bias)
