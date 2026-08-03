@@ -5,6 +5,7 @@ from torch.nn import (
     AdaptiveAvgPool2d,
     BatchNorm2d,
     Conv2d,
+    Dropout,
     Linear,
     MaxPool2d,
     Module,
@@ -15,18 +16,8 @@ from torch.nn import (
 from typing import Literal, Optional, Tuple, Union
 
 
-class GeMPool(Module):
-    def __init__(self, p: float = 3.0, eps: float = 1e-6) -> None:
-        super().__init__()
-        self.p = Parameter(torch.tensor(p))
-        self.eps = eps
-
-    def forward(self, x: torch.Tensor) -> torch.Tensor:
-        p = self.p.clamp(min=1.0, max=8.0)
-        return F.adaptive_avg_pool2d(x.clamp(min=self.eps).pow(p), 1).pow(1.0 / p)
-
-
 def _as_hw(size):
+    """Helper to map a side length L into the shape tuple (L, L)"""
     return (size, size) if isinstance(size, int) else tuple(size)
 
 
@@ -66,11 +57,32 @@ class Stem(Module):
         return self.blocks(x)
 
 
+class DropPath(Module):
+    """Stochastic depth (Huang et al., 2016): during training, drops the
+    entire residual branch for a random subset of samples in the batch,
+    scaling survivors by `1 / (1 - drop_prob)` to preserve the expected
+    branch magnitude. A no-op at eval time or when `drop_prob == 0.0`."""
+
+    def __init__(self, drop_prob: float = 0.0):
+        super().__init__()
+        self.drop_prob = drop_prob
+
+    def forward(self, x):
+        if self.drop_prob == 0.0 or not self.training:
+            return x
+        keep_prob = 1 - self.drop_prob
+        mask_shape = (x.shape[0],) + (1,) * (x.dim() - 1)
+        mask = x.new_empty(mask_shape).bernoulli_(keep_prob)
+        return x * mask / keep_prob
+
+
 class ResidualStage(Module):
     """conv(stride) -> bn -> act -> conv(stride=1) -> bn, added to a 1x1-conv
     shortcut that reshapes the input to the output's shape, then activated."""
 
-    def __init__(self, in_channels, out_channels, stride=2, kernel_size=3):
+    def __init__(
+        self, in_channels, out_channels, stride=2, kernel_size=3, stochastic_depth=0.0
+    ):
         super().__init__()
         padding = kernel_size // 2
 
@@ -82,12 +94,13 @@ class ResidualStage(Module):
         self.bn2 = BatchNorm2d(out_channels)
         self.shortcut = Conv2d(in_channels, out_channels, kernel_size=1, stride=stride)
         self.activation = ReLU(inplace=True)
+        self.drop_path = DropPath(stochastic_depth)
 
     def forward(self, x):
         identity = self.shortcut(x)
 
         out = self.activation(self.bn1(self.conv1(x)))
-        out = self.bn2(self.conv2(out))
+        out = self.drop_path(self.bn2(self.conv2(out)))
 
         return self.activation(out + identity)
 
@@ -115,6 +128,7 @@ class InceptionStage(Module):
         stride=2,
         branch_channels=None,
         reduce_channels=None,
+        stochastic_depth=0.0,
     ):
         super().__init__()
 
@@ -158,6 +172,7 @@ class InceptionStage(Module):
 
         self.shortcut = Conv2d(in_channels, out_channels, kernel_size=1, stride=stride)
         self.activation = ReLU(inplace=True)
+        self.drop_path = DropPath(stochastic_depth)
 
     def forward(self, x):
         identity = self.shortcut(x)
@@ -167,7 +182,7 @@ class InceptionStage(Module):
             self.conv3_branch(x),
             self.conv5_branch(x),
         ]
-        out = torch.cat(branches, dim=1)
+        out = self.drop_path(torch.cat(branches, dim=1))
         return self.activation(out + identity)
 
 
@@ -185,18 +200,26 @@ class FeatureExtractor(Module):
         self,
         in_channels=128,
         stage_channels=(256, 512),
-        stride=2,
+        stride=(2, 2),
         stage_cls=ResidualStage,
         stage_kwargs=None,
     ):
         super().__init__()
         stage_kwargs = stage_kwargs or {}
 
+        if len(stride) != len(stage_channels):
+            raise ValueError(
+                f"stride tuple length ({len(stride)}) must match "
+                f"stage_channels length ({len(stage_channels)})"
+            )
+
         stages = []
         prev_channels = in_channels
-        for out_channels in stage_channels:
+        for out_channels, stage_stride in zip(stage_channels, stride):
             stages.append(
-                stage_cls(prev_channels, out_channels, stride=stride, **stage_kwargs)
+                stage_cls(
+                    prev_channels, out_channels, stride=stage_stride, **stage_kwargs
+                )
             )
             prev_channels = out_channels
         self.stages = Sequential(*stages)
@@ -205,27 +228,49 @@ class FeatureExtractor(Module):
         return self.stages(x)
 
 
+class GeMPool(Module):
+    def __init__(self, p: float = 3.0, eps: float = 1e-6) -> None:
+        super().__init__()
+        self.p = Parameter(torch.tensor(p))
+        self.eps = eps
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        p = self.p.clamp(min=1.0, max=8.0)
+        return F.adaptive_avg_pool2d(x.clamp(min=self.eps).pow(p), 1).pow(1.0 / p)
+
+
 class Classifier(Module):
     """Global average pooling into an MLP head. Returns raw logits: pair
     with `nn.CrossEntropyLoss`, which applies log-softmax internally."""
 
-    def __init__(self, in_channels=512, hidden_dim=256, num_classes=100):
+    def __init__(
+        self,
+        in_channels=512,
+        hidden_dim=256,
+        num_classes=100,
+        pooling: Literal["avg", "gem"] = "avg",
+        dropout=0.0,
+    ):
         super().__init__()
-        self.pool = AdaptiveAvgPool2d(output_size=1)
+        # self.pool = AdaptiveAvgPool2d(output_size=1)
+        self.pool = AdaptiveAvgPool2d(output_size=1) if pooling == "avg" else GeMPool()
         self.fc1 = Linear(in_channels, hidden_dim)
         self.activation = ReLU(inplace=True)
+        self.dropout = Dropout(p=dropout)
         self.fc2 = Linear(hidden_dim, num_classes)
 
     def forward(self, x):
         x = self.pool(x).flatten(1)
         x = self.activation(self.fc1(x))
+        x = self.dropout(x)
         return self.fc2(x)
 
 
 @dataclass
-class CnnConfig:
-    """Hyperparameters for `Cnn`. Defaults reproduce the module's original,
-    hardcoded defaults, with a `ResidualStage`-based feature extractor."""
+class ExpConfig:
+    """Hyperparameters for `Cnn` and its training run. Defaults reproduce the
+    module's original, hardcoded defaults, with a `ResidualStage`-based
+    feature extractor."""
 
     in_channels: int = 3
     num_classes: int = 100
@@ -237,20 +282,31 @@ class CnnConfig:
 
     # Feature extractor
     stage_channels: Tuple[int, ...] = (256, 512)
-    stage_stride: int = 2
+    stage_stride: Tuple[int, ...] = (2, 2)
     block_type: Literal["resnet", "inception"] = "resnet"
     resnet_kernel_size: int = 3
     inception_branch_channels: Optional[Tuple[int, int, int, int]] = None
     inception_reduce_channels: Optional[int] = None
 
     # Classifier
+    pooling: Literal["avg", "gem"] = "avg"
     classifier_hidden_dim: int = 256
+
+    # Regularization
+    dropout: float = 0.0
+    stochastic_depth: float = 0.0
+    label_smoothing: float = 0.0
+
+    # Training
+    learning_rate: float = 1e-3
+    weight_decay: float = 0.0
+    scheduler: Literal["ReduceLROnPlateau", "CosineAnnealingLR"] = "CosineAnnealingLR"
 
 
 class Cnn(Module):
     def __init__(self, config=None):
         super().__init__()
-        config = config or CnnConfig()
+        config = config or ExpConfig()
 
         self.stem = Stem(
             in_channels=config.in_channels,
@@ -261,12 +317,16 @@ class Cnn(Module):
 
         if config.block_type == "resnet":
             stage_cls = ResidualStage
-            stage_kwargs = {"kernel_size": config.resnet_kernel_size}
+            stage_kwargs = {
+                "kernel_size": config.resnet_kernel_size,
+                "stochastic_depth": config.stochastic_depth,
+            }
         elif config.block_type == "inception":
             stage_cls = InceptionStage
             stage_kwargs = {
                 "branch_channels": config.inception_branch_channels,
                 "reduce_channels": config.inception_reduce_channels,
+                "stochastic_depth": config.stochastic_depth,
             }
         else:
             raise ValueError(f"Unknown block_type: {config.block_type!r}")
@@ -283,93 +343,15 @@ class Cnn(Module):
             in_channels=config.stage_channels[-1],
             hidden_dim=config.classifier_hidden_dim,
             num_classes=config.num_classes,
+            pooling=config.pooling,
+            dropout=config.dropout,
         )
+
+        # Not used by the network itself; exposed so training code can build
+        # `nn.CrossEntropyLoss(label_smoothing=model.label_smoothing)`.
+        self.label_smoothing = config.label_smoothing
 
     def forward(self, x):
         x = self.stem(x)
         x = self.feature_extractor(x)
         return self.classifier(x)
-
-    def __init__(
-        self, spec: ModelSpec, num_classes: int = 100, head_dropout: float = 0.35
-    ):
-        super().__init__()
-        self.spec = spec
-        block = PreActBlock if spec.preactivation else PostActBlock
-        channels = spec.channels
-        self.in_channels = channels[0]
-        self.stem = nn.Sequential(
-            nn.Conv2d(3, channels[0], 3, 2, 1, bias=False),
-            nn.BatchNorm2d(channels[0]),
-            nn.ReLU(inplace=True),
-            nn.Conv2d(channels[0], channels[0], 3, 1, 1, bias=False),
-            nn.BatchNorm2d(channels[0]),
-            nn.ReLU(inplace=True),
-            nn.Conv2d(channels[0], channels[0], 3, 1, 1, bias=False),
-            nn.BatchNorm2d(channels[0]),
-            nn.ReLU(inplace=True),
-        )
-        strides = (
-            1,
-            1 if spec.delayed_downsampling else 2,
-            2,
-            1 if spec.dilated_stage4 else 2,
-        )
-        dilations = (1, 1, 1, 2 if spec.dilated_stage4 else 1)
-        self.stages = nn.ModuleList(
-            [
-                self._make_stage(block, c, n, s, d, spec.use_se)
-                for c, n, s, d in zip(channels, spec.layers, strides, dilations)
-            ]
-        )
-        self.pool = GeMPool() if spec.gem_pool else nn.AdaptiveAvgPool2d(1)
-        feature_dim = channels[-1] + (channels[-2] if spec.multiscale else 0)
-        if spec.mlp_head:
-            self.classifier = nn.Sequential(
-                nn.Linear(feature_dim, 512),
-                nn.BatchNorm1d(512),
-                nn.ReLU(inplace=True),
-                nn.Dropout(0.4),
-                nn.Linear(512, num_classes),
-            )
-        else:
-            self.classifier = nn.Sequential(
-                nn.Dropout(head_dropout), nn.Linear(feature_dim, num_classes)
-            )
-        self._init_weights()
-
-    def _make_stage(self, block, out_channels, count, stride, dilation, use_se):
-        modules = [block(self.in_channels, out_channels, stride, dilation, use_se)]
-        self.in_channels = out_channels
-        modules.extend(
-            block(out_channels, out_channels, 1, dilation, use_se)
-            for _ in range(1, count)
-        )
-        return nn.Sequential(*modules)
-
-    def _pooled(self, x):
-        return self.pool(x).flatten(1)
-
-    def forward(self, x):
-        x = self.stem(x)
-        x = self.stages[0](x)
-        x = self.stages[1](x)
-        stage3 = self.stages[2](x)
-        stage4 = self.stages[3](stage3)
-        features = self._pooled(stage4)
-        if self.spec.multiscale:
-            features = torch.cat((self._pooled(stage3), features), dim=1)
-        return self.classifier(features)
-
-    def _init_weights(self):
-        for module in self.modules():
-            if isinstance(module, nn.Conv2d):
-                nn.init.kaiming_normal_(
-                    module.weight, mode="fan_out", nonlinearity="relu"
-                )
-            elif isinstance(module, (nn.BatchNorm1d, nn.BatchNorm2d)):
-                nn.init.ones_(module.weight)
-                nn.init.zeros_(module.bias)
-            elif isinstance(module, nn.Linear):
-                nn.init.normal_(module.weight, 0.0, 0.01)
-                nn.init.zeros_(module.bias)
