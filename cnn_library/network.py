@@ -267,8 +267,8 @@ class Classifier(Module):
 
 
 @dataclass
-class ExpConfig:
-    """Hyperparameters for `Cnn` and its training run. Defaults reproduce the
+class NetworkConfig:
+    """Architecture hyperparameters for `Cnn`. Defaults reproduce the
     module's original, hardcoded defaults, with a `ResidualStage`-based
     feature extractor."""
 
@@ -295,18 +295,12 @@ class ExpConfig:
     # Regularization
     dropout: float = 0.0
     stochastic_depth: float = 0.0
-    label_smoothing: float = 0.0
-
-    # Training
-    learning_rate: float = 1e-3
-    weight_decay: float = 0.0
-    scheduler: Literal["ReduceLROnPlateau", "CosineAnnealingLR"] = "CosineAnnealingLR"
 
 
 class Cnn(Module):
     def __init__(self, config=None):
         super().__init__()
-        config = config or ExpConfig()
+        config = config or NetworkConfig()
 
         self.stem = Stem(
             in_channels=config.in_channels,
@@ -346,10 +340,6 @@ class Cnn(Module):
             pooling=config.pooling,
             dropout=config.dropout,
         )
-
-        # Not used by the network itself; exposed so training code can build
-        # `nn.CrossEntropyLoss(label_smoothing=model.label_smoothing)`.
-        self.label_smoothing = config.label_smoothing
 
     def forward(self, x):
         x = self.stem(x)
