@@ -20,6 +20,7 @@ class TrainConfig:
     scheduler: Literal["ReduceLROnPlateau", "CosineAnnealingLR"] = "CosineAnnealingLR"
     label_smoothing: float = 0.0
     train_transform: T.Compose = None
+    mixup_alpha: float = 0.0
 
 
 def get_loaders(train_transform: T.Compose, split_validation: bool, batch_size: int):
@@ -63,7 +64,16 @@ def get_loaders(train_transform: T.Compose, split_validation: bool, batch_size: 
     return trainloader, valloader, testloader
 
 
-def _run_epoch(model, loader, criterion, optimizer=None, device="cuda"):
+def _mixup_batch(images, labels, alpha):
+    lam = torch.distributions.Beta(alpha, alpha).sample().item()
+    index = torch.randperm(images.size(0), device=images.device)
+    mixed_images = lam * images + (1 - lam) * images[index]
+    return mixed_images, labels, labels[index], lam
+
+
+def _run_epoch(
+    model, loader, criterion, optimizer=None, device="cuda", mixup_alpha=0.0
+):
     model.to(device)
     model.train(optimizer is not None)
 
@@ -72,9 +82,19 @@ def _run_epoch(model, loader, criterion, optimizer=None, device="cuda"):
     with torch.set_grad_enabled(optimizer is not None):
         for images, labels in loader:
             images, labels = images.to(device), labels.to(device)
+            use_mixup = optimizer is not None and mixup_alpha > 0.0
+            if use_mixup:
+                images, labels_a, labels_b, lam = _mixup_batch(
+                    images, labels, mixup_alpha
+                )
 
             logits = model(images)
-            loss = criterion(logits, labels)
+            if use_mixup:
+                loss = lam * criterion(logits, labels_a) + (1 - lam) * criterion(
+                    logits, labels_b
+                )
+            else:
+                loss = criterion(logits, labels)
 
             if optimizer is not None:
                 optimizer.zero_grad()
@@ -82,7 +102,14 @@ def _run_epoch(model, loader, criterion, optimizer=None, device="cuda"):
                 optimizer.step()
 
             total_loss += loss.item() * images.size(0)
-            correct += (logits.argmax(dim=1) == labels).sum().item()
+            if use_mixup:
+                preds = logits.argmax(dim=1)
+                correct += (
+                    lam * (preds == labels_a).sum().item()
+                    + (1 - lam) * (preds == labels_b).sum().item()
+                )
+            else:
+                correct += (logits.argmax(dim=1) == labels).sum().item()
 
     dataset_size = len(loader.dataset)
     return total_loss / dataset_size, correct / dataset_size
@@ -148,7 +175,12 @@ def train(
     for epoch in range(epochs):
         start = time.perf_counter()
         train_loss, train_accuracy = _run_epoch(
-            model, train_loader, criterion, optimizer=optimizer, device=device
+            model,
+            train_loader,
+            criterion,
+            optimizer=optimizer,
+            device=device,
+            mixup_alpha=config.mixup_alpha,
         )
         val_loss, val_accuracy = _run_epoch(model, val_loader, criterion, device=device)
         duration = time.perf_counter() - start
