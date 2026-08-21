@@ -1,146 +1,113 @@
-"""Part 2 of the assignment: fine-tune torchvision's ImageNet-pretrained
-ResNet-18 on FGVC-Aircraft.
+import time
+from dataclasses import dataclass
+from typing import Literal
 
-2A trains with the exact hyperparameters used for the best Part 1 model
-(Adam, lr=1e-3, 20 epochs — see `assignment_module_two.ipynb`, cell 8).
-
-2B then tweaks the optimizer to fit the fact that we're fine-tuning a
-pretrained backbone rather than training from scratch:
-- SGD with momentum + a step decay schedule, following PyTorch's own
-  transfer-learning tutorial
-  (https://docs.pytorch.org/tutorials/beginner/transfer_learning_tutorial.html),
-  which reports this combination working better than Adam for fine-tuning
-  a pretrained conv net;
-- a much smaller learning rate (1e-4 vs 1e-3), since large updates on
-  pretrained weights risk catastrophic forgetting of the ImageNet features
-  (Yosinski et al., "How transferable are features in deep neural
-  networks?", NeurIPS 2014);
-- mild weight decay, since FGVC-Aircraft's ~6700 trainval images are far
-  fewer than ImageNet and the model is prone to overfitting.
-
-`TRANSFORM` is left at `None` for both parts for now, so results are
-comparable and any accuracy change is attributable to the optimizer alone.
-"""
-
-import torch
 from torch import nn
-from torch.optim import SGD
-from torch.optim.lr_scheduler import StepLR
-from torch.utils.data import DataLoader
+from torch.optim import Adam
+from torchvision import transforms as T
 from torchvision.models import ResNet18_Weights, resnet18
 
-import matplotlib.pyplot as plt
+from cnn_library.train import _run_epoch, get_loaders, get_scheduler
 
-from cnn_library.data import FGVCAircraftDataset
-from cnn_library.train import evaluate, train
-
-DATA_ROOT = "data/fgvc-aircraft"
-DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 NUM_CLASSES = 100
 
-BATCH_SIZE = 64
-TRANSFORM = None
 
-
-def build_model():
+def build_resnet():
     model = resnet18(weights=ResNet18_Weights.IMAGENET1K_V1)
     model.fc = nn.Linear(model.fc.in_features, NUM_CLASSES)
     return model
 
 
-def make_history():
-    history = {"loss": [], "accuracy": []}
+@dataclass
+class FinetuneConfig:
+    """Hyperparameters for the finetuning run in `finetune.py`."""
 
-    def callback(epoch, loss, accuracy):
-        history["loss"].append(loss)
-        history["accuracy"].append(accuracy)
-
-    return history, callback
-
-
-def plot_history(history, test_loss, test_accuracy, title, out_path):
-    epochs = range(1, len(history["loss"]) + 1)
-
-    fig, (ax_loss, ax_acc) = plt.subplots(1, 2, figsize=(10, 4))
-    ax_loss.plot(epochs, history["loss"], label="train")
-    ax_loss.axhline(test_loss, color="tab:orange", linestyle="--", label="test")
-    ax_loss.set_xlabel("epoch")
-    ax_loss.set_ylabel("loss")
-    ax_loss.legend()
-
-    ax_acc.plot(epochs, history["accuracy"], label="train")
-    ax_acc.axhline(test_accuracy, color="tab:orange", linestyle="--", label="test")
-    ax_acc.set_xlabel("epoch")
-    ax_acc.set_ylabel("accuracy")
-    ax_acc.legend()
-
-    fig.suptitle(title)
-    fig.tight_layout()
-    fig.savefig(out_path)
-    plt.close(fig)
+    lr_backbone: float = 1e-4
+    lr_head: float = 1e-3
+    weight_decay: float = 0.0
+    scheduler: Literal["ReduceLROnPlateau", "CosineAnnealingLR"] = "ReduceLROnPlateau"
+    label_smoothing: float = 0.0
+    train_transform: T.Compose = None
+    mixup_alpha: float = 0.0
+    epochs: int = 1
+    split_validation: bool = True
+    batch_size: int = 128
 
 
-def make_loader():
-    dataset = FGVCAircraftDataset(DATA_ROOT, split="trainval", transform=TRANSFORM)
-    print(f"Loaded {len(dataset)} images")
-    return DataLoader(dataset, batch_size=BATCH_SIZE, shuffle=True)
+def finetune(
+    model,
+    device,
+    config: FinetuneConfig,
+):
+    total_params = sum(p.numel() for p in model.parameters())
+    print(f"Total parameters: {total_params:,}")
 
+    backbone_params = [
+        p for name, p in model.named_parameters() if not name.startswith("fc.")
+    ]
+    head_params = list(model.fc.parameters())
 
-def run_2a():
-    """Fine-tunes with Part 1's best hyperparameters: Adam, lr=1e-3, 20 epochs."""
+    for param in backbone_params:
+        param.requires_grad = config.lr_backbone != 0
+    for param in head_params:
+        param.requires_grad = config.lr_head != 0
 
-    model = build_model()
-    history, callback = make_history()
+    trainable_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
+    print(f"Trainable parameters: {trainable_params:,}")
 
-    model = train(
-        model,
-        make_loader(),
-        epochs=20,
-        learning_rate=1e-3,
-        device=DEVICE,
-        callback=callback,
+    train_loader, val_loader, _ = get_loaders(
+        config.train_transform, config.split_validation, config.batch_size
     )
 
-    test_loss, test_accuracy = evaluate(
-        model, DATA_ROOT, transform=TRANSFORM, batch_size=BATCH_SIZE, device=DEVICE
-    )
-    print(f"[2A] test loss={test_loss:.4f} accuracy={test_accuracy:.4f}")
-    plot_history(history, test_loss, test_accuracy, "Part 2A: baseline fine-tuning", "finetune_2a.png")
+    param_groups = []
+    if config.lr_backbone != 0:
+        param_groups.append({"params": backbone_params, "lr": config.lr_backbone})
+    if config.lr_head != 0:
+        param_groups.append({"params": head_params, "lr": config.lr_head})
 
-    return model, test_loss, test_accuracy
+    criterion = nn.CrossEntropyLoss(label_smoothing=config.label_smoothing)
+    optimizer = Adam(param_groups, weight_decay=config.weight_decay)
+    scheduler = get_scheduler(config.scheduler, optimizer, config.epochs)
 
+    history = {
+        "train_loss": [],
+        "train_accuracy": [],
+        "val_loss": [],
+        "val_accuracy": [],
+    }
+    epoch_durations = []
 
-def run_2b():
-    """Fine-tunes with hyperparameters tweaked for transfer learning: SGD with
-    momentum, a lower learning rate, weight decay, and a step decay schedule."""
+    for epoch in range(config.epochs):
+        start = time.perf_counter()
+        train_loss, train_accuracy = _run_epoch(
+            model,
+            train_loader,
+            criterion,
+            optimizer=optimizer,
+            device=device,
+            mixup_alpha=config.mixup_alpha,
+        )
+        val_loss, val_accuracy = _run_epoch(model, val_loader, criterion, device=device)
+        duration = time.perf_counter() - start
+        epoch_durations.append(duration)
 
-    model = build_model()
-    optimizer = SGD(model.parameters(), lr=1e-4, momentum=0.9, weight_decay=1e-4)
-    scheduler = StepLR(optimizer, step_size=7, gamma=0.1)
-    history, callback = make_history()
+        if scheduler is not None:
+            if config.scheduler == "ReduceLROnPlateau":
+                scheduler.step(val_loss)
+            elif scheduler:
+                scheduler.step()
 
-    model = train(
-        model,
-        make_loader(),
-        epochs=20,
-        optimizer=optimizer,
-        scheduler=scheduler,
-        device=DEVICE,
-        callback=callback,
-    )
+        history["train_loss"].append(train_loss)
+        history["train_accuracy"].append(train_accuracy)
+        history["val_loss"].append(val_loss)
+        history["val_accuracy"].append(val_accuracy)
 
-    test_loss, test_accuracy = evaluate(
-        model, DATA_ROOT, transform=TRANSFORM, batch_size=BATCH_SIZE, device=DEVICE
-    )
-    print(f"[2B] test loss={test_loss:.4f} accuracy={test_accuracy:.4f}")
-    plot_history(history, test_loss, test_accuracy, "Part 2B: tuned fine-tuning", "finetune_2b.png")
+        avg_duration = sum(epoch_durations) / len(epoch_durations)
+        eta = avg_duration * (config.epochs - epoch - 1)
+        print(
+            f"epoch {epoch + 1}/{config.epochs} loss={train_loss:.4f} accuracy={train_accuracy:.4f} "
+            f"val_loss={val_loss:.4f} val_accuracy={val_accuracy:.4f} "
+            f"time={duration:.1f}s eta={eta / 60:.1f}min"
+        )
 
-    return model, test_loss, test_accuracy
-
-
-if __name__ == "__main__":
-    print("=== Part 2A: fine-tuning with Part 1's hyperparameters ===")
-    run_2a()
-
-    print("\n=== Part 2B: fine-tuning with tuned hyperparameters ===")
-    run_2b()
+    return model, history
