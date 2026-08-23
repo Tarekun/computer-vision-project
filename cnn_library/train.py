@@ -5,7 +5,7 @@ import torch
 from torchvision.datasets import FGVCAircraft
 from typing import Literal
 from torch import nn
-from torch.optim import Adam
+from torch.optim import SGD, Adam, AdamW
 from torch.optim.lr_scheduler import ReduceLROnPlateau, CosineAnnealingLR, OneCycleLR
 from torch.utils.data import DataLoader
 from torchvision import transforms as T
@@ -17,10 +17,14 @@ class TrainConfig:
 
     learning_rate: float = 1e-3
     weight_decay: float = 0.0
+    optimizer: Literal["SGD", "Adam", "AdamW"] = "Adam"
     scheduler: Literal["ReduceLROnPlateau", "CosineAnnealingLR"] = "CosineAnnealingLR"
     label_smoothing: float = 0.0
     train_transform: T.Compose = None
     mixup_alpha: float = 0.0
+    epochs: int = 1
+    batch_size: int = 64
+    momentum: float = 0
 
 
 def get_loaders(train_transform: T.Compose, split_validation: bool, batch_size: int):
@@ -123,6 +127,19 @@ def evaluate(model, train_transform=None, batch_size=64, device="cuda"):
     return _run_epoch(model, loader, criterion, device=device)
 
 
+def get_optimizer(
+    name: Literal["SGD", "Adam", "AdamW"], parameters, lr, weight_decay, momentum
+):
+    if name == "SGD":
+        return SGD(parameters, lr=lr, weight_decay=weight_decay, momentum=momentum)
+    elif name == "Adam":
+        return Adam(parameters, lr=lr, weight_decay=weight_decay)
+    elif name == "AdamW":
+        return AdamW(parameters, lr=lr, weight_decay=weight_decay)
+    else:
+        return None
+
+
 def get_scheduler(
     name: Literal["ReduceLROnPlateau", "CosineAnnealingLR"], optimizer, epochs
 ):
@@ -149,20 +166,23 @@ def train(
     split_validation: bool,
     device,
     config: TrainConfig,
-    epochs=1,
 ):
     total_params = sum(p.numel() for p in model.parameters())
     print(f"Total parameters: {total_params:,}")
 
     train_loader, val_loader, _ = get_loaders(
-        config.train_transform, split_validation, 128
+        config.train_transform, split_validation, config.batch_size
     )
 
     criterion = nn.CrossEntropyLoss(label_smoothing=config.label_smoothing)
-    optimizer = Adam(
-        model.parameters(), lr=config.learning_rate, weight_decay=config.weight_decay
+    optimizer = get_optimizer(
+        config.optimizer,
+        model.parameters(),
+        config.learning_rate,
+        config.weight_decay,
+        config.momentum,
     )
-    scheduler = get_scheduler(config.scheduler, optimizer, epochs)
+    scheduler = get_scheduler(config.scheduler, optimizer, config.epochs)
 
     history = {
         "train_loss": [],
@@ -172,7 +192,7 @@ def train(
     }
     epoch_durations = []
 
-    for epoch in range(epochs):
+    for epoch in range(config.epochs):
         start = time.perf_counter()
         train_loss, train_accuracy = _run_epoch(
             model,
@@ -198,9 +218,9 @@ def train(
         history["val_accuracy"].append(val_accuracy)
 
         avg_duration = sum(epoch_durations) / len(epoch_durations)
-        eta = avg_duration * (epochs - epoch - 1)
+        eta = avg_duration * (config.epochs - epoch - 1)
         print(
-            f"epoch {epoch + 1}/{epochs} loss={train_loss:.4f} accuracy={train_accuracy:.4f} "
+            f"epoch {epoch + 1}/{config.epochs} loss={train_loss:.4f} accuracy={train_accuracy:.4f} "
             f"val_loss={val_loss:.4f} val_accuracy={val_accuracy:.4f} "
             f"time={duration:.1f}s eta={eta / 60:.1f}min"
         )
