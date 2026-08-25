@@ -1,0 +1,110 @@
+{
+  "folds": [
+    {
+      "fold": 0,
+      "kept_images": 64,
+      "n_examples": 127,
+      "hand_val_metrics": {
+        "n": 35,
+        "count_acc": 0.9428571428571428,
+        "amount_acc": 0.42857142857142855,
+        "mean_abs_err": 0.218
+      },
+      "learned_val_metrics": {
+        "n": 35,
+        "count_acc": 0.9428571428571428,
+        "amount_acc": 0.4857142857142857,
+        "mean_abs_err": 0.22371428571428573
+      },
+      "learned_weights": {
+        "template": 2.0133325563746167,
+        "fam": 0.7275011116364996,
+        "bim": 5.859873520569389,
+        "sift": 0.449976461756703,
+        "order_pen": 3.422139532864998,
+        "same_pen": -0.5302972248463145,
+        "anchor_pen": 8.61336448313143
+      }
+    },
+    {
+      "fold": 1,
+      "kept_images": 56,
+      "n_examples": 108,
+      "hand_val_metrics": {
+        "n": 36,
+        "count_acc": 0.9444444444444444,
+        "amount_acc": 0.5833333333333334,
+        "mean_abs_err": 0.19916666666666666
+      },
+      "learned_val_metrics": {
+        "n": 36,
+        "count_acc": 0.9444444444444444,
+        "amount_acc": 0.6388888888888888,
+        "mean_abs_err": 0.14777777777777776
+      },
+      "learned_weights": {
+        "template": 2.0417429516411034,
+        "fam": 0.903443941752756,
+        "bim": 5.8993130783654415,
+        "sift": 0.41624471536341223,
+        "order_pen": 2.7504045770868384,
+        "same_pen": 1.1833583759881148,
+        "anchor_pen": 6.161735513007051
+      }
+    },
+    {
+      "fold": 2,
+      "kept_images": 51,
+      "n_examples": 93,
+      "hand_val_metrics": {
+        "n": 36,
+        "count_acc": 1.0,
+        "amount_acc": 0.6111111111111112,
+        "mean_abs_err": 0.14055555555555554
+      },
+      "learned_val_metrics": {
+        "n": 36,
+        "count_acc": 1.0,
+        "amount_acc": 0.5,
+        "mean_abs_err": 0.18305555555555555
+      },
+      "learned_weights": {
+        "template": 2.118308933720177,
+        "fam": 1.2197814197471317,
+        "bim": 5.939621710050864,
+        "sift": 0.34051101328706895,
+        "order_pen": 4.506053165315747,
+        "same_pen": 0.8352706618551685,
+        "anchor_pen": 9.22780960445493
+      }
+    },
+    {
+      "fold": 3,
+      "kept_images": 49,
+      "n_examples": 97,
+      "hand_val_metrics": {
+        "n": 35,
+        "count_acc": 1.0,
+        "amount_acc": 0.5142857142857142,
+        "mean_abs_err": 0.27399999999999997
+      },
+      "learned_val_metrics": {
+        "n": 35,
+        "count_acc": 1.0,
+        "amount_acc": 0.5142857142857142,
+        "mean_abs_err": 0.25828571428571423
+      },
+      "learned_weights": {
+        "template": 3.177213019761061,
+        "fam": 1.1516813044996967,
+        "bim": 5.323602115400827,
+        "sift": 0.9871633168143298,
+        "order_pen": 2.0676307554847306,
+        "same_pen": -1.8690558671216564,
+        "anchor_pen": 7.958558167832272
+      }
+    }
+  ],
+  "hand_mean_amount_acc": 0.5343253968253968,
+  "learned_mean_amount_acc": 0.5347222222222222
+}

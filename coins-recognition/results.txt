@@ -1,0 +1,446 @@
+GIACOMO
+    Coin count accuracy: 97.18% (138/142)
+    Total amount accuracy: 48.59% (69/142)
+    Images with mistakes:
+        image_10.jpg
+        image_101.jpg
+        image_102.jpg
+        image_103.jpg
+        image_105.jpg
+        image_107.jpg
+        image_11.jpg
+        image_111.jpg
+        image_112.jpg
+        image_114.jpg
+        image_118.jpg
+        image_119.jpg
+        image_120.jpg
+        image_121.jpg
+        image_122.jpg
+        image_123.jpg
+        image_124.jpg
+        image_127.jpg
+        image_128.jpg
+        image_129.jpg
+        image_13.jpg
+        image_130.jpg
+        image_131.jpg
+        image_132.jpg
+        image_134.jpg
+        image_136.jpg
+        image_137.jpg
+        image_139.jpg
+        image_140.jpg
+        image_16.jpg
+        image_17.jpg
+        image_18.jpg
+        image_2.jpg
+        image_20.jpg
+        image_21.jpg
+        image_24.jpg
+        image_27.jpg
+        image_28.jpg
+        image_29.jpg
+        image_32.jpg
+        image_34.jpg
+        image_38.jpg
+        image_40.jpg
+        image_43.jpg
+        image_44.jpg
+        image_45.jpg
+        image_47.jpg
+        image_48.jpg
+        image_50.jpg
+        image_52.jpg
+        image_54.jpg
+        image_55.jpg
+        image_56.jpg
+        image_59.jpg
+        image_60.jpg
+        image_61.jpg
+        image_62.jpg
+        image_67.jpg
+        image_69.jpg
+        image_73.jpg
+        image_77.jpg
+        image_79.jpg
+        image_8.jpg
+        image_82.jpg
+        image_85.jpg
+        image_86.jpg
+        image_87.jpg
+        image_88.jpg
+        image_89.jpg
+        image_9.jpg
+        image_92.jpg
+        image_93.jpg
+        image_95.jpg
+        image_97.jpg
+
+
+TIZIANO
+    Coin count accuracy: 97.18% (138/142)
+    Total amount accuracy: 45.07% (64/142)
+    Images with mistakes:
+        image_10.jpg
+        image_101.jpg
+        image_102.jpg
+        image_103.jpg
+        image_105.jpg
+        image_107.jpg
+        image_109.jpg
+        image_11.jpg
+        image_111.jpg
+        image_112.jpg
+        image_114.jpg
+        image_118.jpg
+        image_120.jpg
+        image_121.jpg
+        image_122.jpg
+        image_123.jpg
+        image_124.jpg
+        image_127.jpg
+        image_128.jpg
+        image_129.jpg
+        image_13.jpg
+        image_130.jpg
+        image_131.jpg
+        image_132.jpg
+        image_134.jpg
+        image_135.jpg
+        image_136.jpg
+        image_137.jpg
+        image_138.jpg
+        image_139.jpg
+        image_140.jpg
+        image_16.jpg
+        image_17.jpg
+        image_18.jpg
+        image_2.jpg
+        image_20.jpg
+        image_21.jpg
+        image_24.jpg
+        image_27.jpg
+        image_28.jpg
+        image_32.jpg
+        image_34.jpg
+        image_38.jpg
+        image_40.jpg
+        image_43.jpg
+        image_44.jpg
+        image_45.jpg
+        image_47.jpg
+        image_48.jpg
+        image_50.jpg
+        image_51.jpg
+        image_52.jpg
+        image_54.jpg
+        image_55.jpg
+        image_56.jpg
+        image_57.jpg
+        image_59.jpg
+        image_60.jpg
+        image_61.jpg
+        image_62.jpg
+        image_67.jpg
+        image_69.jpg
+        image_73.jpg
+        image_74.jpg
+        image_75.jpg
+        image_77.jpg
+        image_79.jpg
+        image_8.jpg
+        image_82.jpg
+        image_85.jpg
+        image_86.jpg
+        image_87.jpg
+        image_88.jpg
+        image_89.jpg
+        image_9.jpg
+        image_92.jpg
+        image_93.jpg
+        image_95.jpg
+        image_97.jpg
+
+
+PIERO
+    Coin count accuracy: 52.11% (74/142)
+    Total amount accuracy: 24.65% (35/142)
+    Images with mistakes:
+        image_1.jpg
+        image_100.jpg
+        image_101.jpg
+        image_102.jpg
+        image_105.jpg
+        image_106.jpg
+        image_107.jpg
+        image_109.jpg
+        image_11.jpg
+        image_110.jpg
+        image_111.jpg
+        image_112.jpg
+        image_115.jpg
+        image_117.jpg
+        image_118.jpg
+        image_120.jpg
+        image_121.jpg
+        image_122.jpg
+        image_123.jpg
+        image_124.jpg
+        image_125.jpg
+        image_126.jpg
+        image_127.jpg
+        image_128.jpg
+        image_13.jpg
+        image_130.jpg
+        image_131.jpg
+        image_132.jpg
+        image_133.jpg
+        image_135.jpg
+        image_137.jpg
+        image_138.jpg
+        image_139.jpg
+        image_14.jpg
+        image_140.jpg
+        image_141.jpg
+        image_142.jpg
+        image_16.jpg
+        image_17.jpg
+        image_18.jpg
+        image_2.jpg
+        image_20.jpg
+        image_21.jpg
+        image_22.jpg
+        image_23.jpg
+        image_25.jpg
+        image_26.jpg
+        image_27.jpg
+        image_28.jpg
+        image_3.jpg
+        image_32.jpg
+        image_33.jpg
+        image_34.jpg
+        image_35.jpg
+        image_36.jpg
+        image_37.jpg
+        image_38.jpg
+        image_39.jpg
+        image_40.jpg
+        image_43.jpg
+        image_45.jpg
+        image_46.jpg
+        image_47.jpg
+        image_48.jpg
+        image_49.jpg
+        image_5.jpg
+        image_50.jpg
+        image_51.jpg
+        image_52.jpg
+        image_54.jpg
+        image_55.jpg
+        image_56.jpg
+        image_58.jpg
+        image_59.jpg
+        image_6.jpg
+        image_61.jpg
+        image_62.jpg
+        image_63.jpg
+        image_65.jpg
+        image_66.jpg
+        image_67.jpg
+        image_68.jpg
+        image_69.jpg
+        image_70.jpg
+        image_72.jpg
+        image_73.jpg
+        image_74.jpg
+        image_76.jpg
+        image_77.jpg
+        image_78.jpg
+        image_8.jpg
+        image_80.jpg
+        image_82.jpg
+        image_84.jpg
+        image_85.jpg
+        image_86.jpg
+        image_88.jpg
+        image_89.jpg
+        image_9.jpg
+        image_90.jpg
+        image_92.jpg
+        image_93.jpg
+        image_94.jpg
+        image_95.jpg
+        image_96.jpg
+        image_97.jpg
+        image_98.jpg
+        image_99.jpg
+
+
+RECONFIGURED
+    Coin count accuracy: 97.18% (138/142)
+    Total amount accuracy: 53.52% (76/142)
+    Images with mistakes:
+        image_10.jpg
+        image_100.jpg
+        image_101.jpg
+        image_102.jpg
+        image_108.jpg
+        image_109.jpg
+        image_11.jpg
+        image_111.jpg
+        image_112.jpg
+        image_114.jpg
+        image_117.jpg
+        image_118.jpg
+        image_119.jpg
+        image_12.jpg
+        image_122.jpg
+        image_123.jpg
+        image_124.jpg
+        image_127.jpg
+        image_128.jpg
+        image_129.jpg
+        image_132.jpg
+        image_135.jpg
+        image_136.jpg
+        image_137.jpg
+        image_138.jpg
+        image_140.jpg
+        image_16.jpg
+        image_17.jpg
+        image_18.jpg
+        image_20.jpg
+        image_21.jpg
+        image_24.jpg
+        image_26.jpg
+        image_27.jpg
+        image_32.jpg
+        image_34.jpg
+        image_38.jpg
+        image_40.jpg
+        image_43.jpg
+        image_44.jpg
+        image_48.jpg
+        image_50.jpg
+        image_51.jpg
+        image_52.jpg
+        image_55.jpg
+        image_56.jpg
+        image_59.jpg
+        image_60.jpg
+        image_61.jpg
+        image_62.jpg
+        image_63.jpg
+        image_64.jpg
+        image_72.jpg
+        image_73.jpg
+        image_77.jpg
+        image_79.jpg
+        image_8.jpg
+        image_82.jpg
+        image_85.jpg
+        image_86.jpg
+        image_88.jpg
+        image_9.jpg
+        image_90.jpg
+        image_92.jpg
+        image_93.jpg
+        image_94.jpg
+        image_95.jpg
+        image_98.jpg
+
+    See reconfigured/README.md for what changed vs giacomo/tiziano, the tuning
+    methodology, and the honest cross-validated generalization estimate (this
+    53.52% is an in-sample fit against the same 142 images it's measured on;
+    the cross-validated estimate is ~48-51%, still a real but more modest
+    improvement over giacomo's 48.59%).
+
+
+EXPERIMENTAL
+    Coin count accuracy: 97.18% (138/142)
+    Total amount accuracy: 53.52% (76/142)
+    Images with mistakes:
+        image_10.jpg
+        image_100.jpg
+        image_101.jpg
+        image_102.jpg
+        image_108.jpg
+        image_109.jpg
+        image_11.jpg
+        image_111.jpg
+        image_112.jpg
+        image_114.jpg
+        image_117.jpg
+        image_118.jpg
+        image_119.jpg
+        image_12.jpg
+        image_122.jpg
+        image_123.jpg
+        image_124.jpg
+        image_127.jpg
+        image_128.jpg
+        image_129.jpg
+        image_132.jpg
+        image_135.jpg
+        image_136.jpg
+        image_137.jpg
+        image_138.jpg
+        image_140.jpg
+        image_16.jpg
+        image_17.jpg
+        image_18.jpg
+        image_20.jpg
+        image_21.jpg
+        image_24.jpg
+        image_26.jpg
+        image_27.jpg
+        image_32.jpg
+        image_34.jpg
+        image_38.jpg
+        image_40.jpg
+        image_43.jpg
+        image_44.jpg
+        image_48.jpg
+        image_50.jpg
+        image_51.jpg
+        image_52.jpg
+        image_55.jpg
+        image_56.jpg
+        image_59.jpg
+        image_60.jpg
+        image_61.jpg
+        image_62.jpg
+        image_63.jpg
+        image_64.jpg
+        image_72.jpg
+        image_73.jpg
+        image_77.jpg
+        image_79.jpg
+        image_8.jpg
+        image_82.jpg
+        image_85.jpg
+        image_86.jpg
+        image_88.jpg
+        image_9.jpg
+        image_90.jpg
+        image_92.jpg
+        image_93.jpg
+        image_94.jpg
+        image_95.jpg
+        image_98.jpg
+
+    Identical numbers and mistake list to RECONFIGURED, on purpose: this is the
+    result of a full design/implement/test loop over 6 further ideas from
+    experimental/REVIEW.md (multi-exemplar reference jitter, a self-trained
+    learned fusion classifier, size-first two-stage classification, joint
+    REF_EDGE+decast-atlas retuning, ORB vs. SIFT, dropping two hand-tuned
+    patches) -- none beat reconfigured's architecture under a stricter 4-fold
+    cross-validation, so nothing changed in the shipped configuration. One
+    idea (the learned classifier) tied reconfigured's hand-tuned fusion despite
+    using far fewer parameters, which is itself a notable finding. See
+    experimental/EXPERIMENTS.md for every idea's measured result and
+    experimental/SOLUTION.md for the full write-up, including this iteration's
+    own (more reliable, and more pessimistic) cross-validated estimate.
+
+
